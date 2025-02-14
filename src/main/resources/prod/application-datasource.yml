@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${PROD_SERVER}:${MYSQL_PORT}/${MYSQL_DB}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    open-in-view: false
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+
+logging:
+  level:
+    root: WARN
