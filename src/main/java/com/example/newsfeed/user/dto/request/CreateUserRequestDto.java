@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class UserCreateRequestDto {
+public class CreateUserRequestDto {
 
     @NotBlank
     @Pattern(

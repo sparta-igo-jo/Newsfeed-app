@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
-public class UserDeleteRequestDto {
+public class DeleteUserRequestDto {
 
     @NotBlank
     private String password;

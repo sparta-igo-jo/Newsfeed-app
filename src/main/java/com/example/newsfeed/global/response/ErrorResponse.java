@@ -13,7 +13,7 @@ import static com.fasterxml.jackson.annotation.JsonFormat.Feature.WRITE_SINGLE_E
 
 @Getter
 @AllArgsConstructor
-public class ErrorResponse {
+public class ErrorResponse<T> implements Response<T> {
 
     private final HttpStatus status;
 
@@ -22,7 +22,8 @@ public class ErrorResponse {
 
     private final LocalDateTime timestamp;
 
-    public static ErrorResponse fail(HttpStatus status, List<ErrorDetail> errorDetails) {
-        return new ErrorResponse(status, errorDetails, LocalDateTime.now());
+    @Override
+    public T getData() {
+        return null;  // 에러 응답은 데이터가 없으므로 null
     }
 }

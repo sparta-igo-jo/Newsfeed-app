@@ -2,8 +2,8 @@ package com.example.newsfeed.user.controller;
 
 import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.user.application.service.UserService;
-import com.example.newsfeed.user.dto.request.UserDeleteRequestDto;
-import com.example.newsfeed.user.dto.request.UserUpdateRequestDto;
+import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
+import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("{userId}")
+    @GetMapping("/{userId}")
     public Response<GetUserResponseDto> getUser(@PathVariable Long userId) {
         GetUserResponseDto getUserDto = userService.findUser(userId);
         return Response.of(getUserDto);
@@ -34,7 +34,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public Response<Long> updateUser(
         @PathVariable Long userId,
-        @Valid @RequestBody UserUpdateRequestDto dto
+        @Valid @RequestBody UpdateUserRequestDto dto
     ) {
         Long updatedUserId = userService.updateUser(userId, dto);
         return Response.of(updatedUserId);
@@ -43,7 +43,7 @@ public class UserController {
     @PostMapping("/{userId}/delete")
     public Response<Void> deleteUser(
         @PathVariable Long userId,
-        @Valid @RequestBody UserDeleteRequestDto dto
+        @Valid @RequestBody DeleteUserRequestDto dto
     ) {
         userService.deleteUser(userId, dto);
         return Response.empty();

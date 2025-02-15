@@ -1,10 +1,9 @@
 package com.example.newsfeed.user.application.service;
 
 import com.example.newsfeed.global.common.exception.ErrorDetail;
-import com.example.newsfeed.global.common.filestorage.FileStorageService;
 import com.example.newsfeed.user.application.converter.UserConverter;
-import com.example.newsfeed.user.dto.request.UserDeleteRequestDto;
-import com.example.newsfeed.user.dto.request.UserUpdateRequestDto;
+import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
+import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import com.example.newsfeed.user.entity.User;
@@ -41,7 +40,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long updateUser(Long userId, UserUpdateRequestDto dto) {
+    public Long updateUser(Long userId, UpdateUserRequestDto dto) {
         //TODO: 회원 인증 로직 구현 이후 로그인 유저와 저장된 유저 간의 검증 필요
         User findUser = findUserById(userId);
 
@@ -70,7 +69,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(Long userId, UserDeleteRequestDto dto) {
+    public void deleteUser(Long userId, DeleteUserRequestDto dto) {
         //TODO: 회원 인증 로직 구현 이후 로그인 유저와 저장된 유저 간의 검증 필요
         User findUser = findUserById(userId);
         validatePassword(dto.getPassword(), findUser.getPassword());
@@ -85,7 +84,8 @@ public class UserService {
         }
     }
 
-    private User findUserById(Long userId) {
+    public User findUserById(Long userId) {
+        //TODO: public으로 열지 않고 다른 도메인의 서비스에서도 호출하도록 로직을 바꿀 수 있는지 확인
         return userRepository.findUserById(userId)
             .orElseThrow(() -> new UserNotFoundException(List.of(
                 new ErrorDetail(USER_NOT_FOUND, null, USER_NOT_FOUND.getMessage())

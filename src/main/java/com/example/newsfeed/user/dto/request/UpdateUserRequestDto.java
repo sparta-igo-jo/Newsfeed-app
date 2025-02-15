@@ -13,7 +13,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @RequiredArgsConstructor
-public class UserUpdateRequestDto {
+public class UpdateUserRequestDto {
 
     @Nullable
     @JsonInclude(NON_NULL)
