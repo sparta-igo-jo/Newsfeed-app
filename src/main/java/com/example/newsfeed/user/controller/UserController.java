@@ -3,6 +3,7 @@ package com.example.newsfeed.user.controller;
 import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.user.application.service.UserService;
 import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
+import com.example.newsfeed.user.dto.request.UpdateUserPasswordRequestDto;
 import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
@@ -31,12 +32,21 @@ public class UserController {
         return Response.of(getUsersDto);
     }
 
-    @PatchMapping("/{userId}")
-    public Response<Long> updateUser(
+    @PatchMapping("/{userId}/profile")
+    public Response<Long> updateUserProfile(
         @PathVariable Long userId,
         @Valid @RequestBody UpdateUserRequestDto dto
     ) {
-        Long updatedUserId = userService.updateUser(userId, dto);
+        Long updatedUserId = userService.updateUserProfile(userId, dto);
+        return Response.of(updatedUserId);
+    }
+
+    @PatchMapping("/{userId}/password")
+    public Response<Long> updateUserPassword(
+        @PathVariable Long userId,
+        @Valid @RequestBody UpdateUserPasswordRequestDto dto
+    ) {
+        Long updatedUserId = userService.updateUserPassword(userId, dto);
         return Response.of(updatedUserId);
     }
 

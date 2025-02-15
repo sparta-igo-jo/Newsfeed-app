@@ -3,13 +3,14 @@ package com.example.newsfeed.user.application.service;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import com.example.newsfeed.user.application.converter.UserConverter;
 import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
+import com.example.newsfeed.user.dto.request.UpdateUserPasswordRequestDto;
 import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import com.example.newsfeed.user.entity.User;
 import com.example.newsfeed.user.exception.InvalidPasswordException;
+import com.example.newsfeed.user.exception.PasswordSameAsOldException;
 import com.example.newsfeed.user.exception.UserNotFoundException;
-import com.example.newsfeed.user.exception.UserUpdateFailedException;
 import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,7 +41,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long updateUser(Long userId, UpdateUserRequestDto dto) {
+    public Long updateUserProfile(Long userId, UpdateUserRequestDto dto) {
         //TODO: 회원 인증 로직 구현 이후 로그인 유저와 저장된 유저 간의 검증 필요
         User findUser = findUserById(userId);
 
@@ -48,15 +49,6 @@ public class UserService {
 
         if (dto.getName() != null) {
             findUser.updateName(dto.getName());
-        }
-
-        if (dto.getChangePassword() != null) {
-            if (dto.getPassword().equals(dto.getChangePassword())) {
-                throw new UserUpdateFailedException(List.of(
-                    new ErrorDetail(PASSWORD_SAME_AS_OLD, "password", PASSWORD_SAME_AS_OLD.getMessage())
-                ));
-            }
-            findUser.updatePassword(passwordEncoder.encode(dto.getPassword()));
         }
 
         if (dto.getDescription() != null) {
@@ -69,19 +61,28 @@ public class UserService {
     }
 
     @Transactional
+    public Long updateUserPassword(Long userId, UpdateUserPasswordRequestDto dto) {
+        //TODO: 회원 인증 로직 구현 이후 로그인 유저와 저장된 유저 간의 검증 필요
+        User findUser = findUserById(userId);
+
+        validatePassword(dto.getPassword(), findUser.getPassword());
+
+        if (dto.getPassword().equals(dto.getChangePassword())) {
+            throw new PasswordSameAsOldException(List.of(
+                new ErrorDetail(PASSWORD_SAME_AS_OLD, "changePassword", PASSWORD_SAME_AS_OLD.getMessage())
+            ));
+        }
+
+        findUser.updatePassword(passwordEncoder.encode(dto.getChangePassword()));
+        return findUser.getId();
+    }
+
+    @Transactional
     public void deleteUser(Long userId, DeleteUserRequestDto dto) {
         //TODO: 회원 인증 로직 구현 이후 로그인 유저와 저장된 유저 간의 검증 필요
         User findUser = findUserById(userId);
         validatePassword(dto.getPassword(), findUser.getPassword());
         userRepository.deleteUserById(userId);
-    }
-
-    private void validatePassword(String inputPassword, String storedPassword) {
-        if (!passwordEncoder.matches(inputPassword, storedPassword)) {
-            throw new InvalidPasswordException(List.of(
-                new ErrorDetail(INVALID_PASSWORD, "password", INVALID_PASSWORD.getMessage())
-            ));
-        }
     }
 
     public User findUserById(Long userId) {
@@ -90,5 +91,13 @@ public class UserService {
             .orElseThrow(() -> new UserNotFoundException(List.of(
                 new ErrorDetail(USER_NOT_FOUND, null, USER_NOT_FOUND.getMessage())
             )));
+    }
+
+    private void validatePassword(String inputPassword, String storedPassword) {
+        if (!passwordEncoder.matches(inputPassword, storedPassword)) {
+            throw new InvalidPasswordException(List.of(
+                new ErrorDetail(INVALID_PASSWORD, "password", INVALID_PASSWORD.getMessage())
+            ));
+        }
     }
 }

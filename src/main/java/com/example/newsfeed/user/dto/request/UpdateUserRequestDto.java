@@ -3,7 +3,6 @@ package com.example.newsfeed.user.dto.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +30,4 @@ public class UpdateUserRequestDto {
 
     @NotBlank
     private final String password;
-
-    @Nullable
-    @Pattern(
-        regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$",
-        message = "비밀번호는 8자 이상, 최소 하나의 영문자, 숫자, 특수 문자를 포함해야 합니다.")
-    @JsonInclude(NON_NULL)
-    private final String changePassword;
 }
