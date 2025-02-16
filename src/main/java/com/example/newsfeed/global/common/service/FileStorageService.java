@@ -25,7 +25,7 @@ public class FileStorageService {
             }
             LocalDate date = LocalDate.now();
             String dirPath = String.format("%s/%s/%d/%02d/%02d",
-                    uploadDir, email, date.getYear(), date.getMonth(), date.getDayOfMonth());
+                    uploadDir, email, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
 
             Path directory = Paths.get(dirPath);
             // directory : 파일을 저장할 경로
