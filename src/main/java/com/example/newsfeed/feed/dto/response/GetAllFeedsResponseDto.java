@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class GetFeedResponseDto {
+public class GetAllFeedsResponseDto {
 
     private final Long feedId;
 
@@ -23,17 +23,14 @@ public class GetFeedResponseDto {
 
     private final LocalDateTime updatedAt;
 
-    private final Page<Comment> comments;
-
-    public static GetFeedResponseDto of(
+    public static GetAllFeedsResponseDto of(
             Long feedId,
             String title,
             String contents,
             String feedImage,
             Long likeCount,
-            LocalDateTime updatedAt,
-            Page<Comment> comments
+            LocalDateTime updatedAt
     ) {
-        return new GetFeedResponseDto(feedId, title, contents, feedImage, likeCount, updatedAt, comments);
+        return new GetAllFeedsResponseDto(feedId, title, contents, feedImage, likeCount, updatedAt);
     }
 }

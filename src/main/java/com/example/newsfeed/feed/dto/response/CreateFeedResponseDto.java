@@ -2,14 +2,12 @@ package com.example.newsfeed.feed.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 
-import javax.xml.stream.events.Comment;
 import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-public class GetFeedResponseDto {
+public class CreateFeedResponseDto {
 
     private final Long feedId;
 
@@ -23,17 +21,14 @@ public class GetFeedResponseDto {
 
     private final LocalDateTime updatedAt;
 
-    private final Page<Comment> comments;
-
-    public static GetFeedResponseDto of(
+    public static CreateFeedResponseDto of(
             Long feedId,
             String title,
             String contents,
             String feedImage,
             Long likeCount,
-            LocalDateTime updatedAt,
-            Page<Comment> comments
+            LocalDateTime updatedAt
     ) {
-        return new GetFeedResponseDto(feedId, title, contents, feedImage, likeCount, updatedAt, comments);
+        return new CreateFeedResponseDto(feedId, title, contents, feedImage, likeCount, updatedAt);
     }
 }
