@@ -1,8 +1,14 @@
 package com.example.newsfeed.feed.entity;
 
 import com.example.newsfeed.global.common.entity.BaseTimeEntity;
+import com.example.newsfeed.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "feeds")
 public class Feed extends BaseTimeEntity {
@@ -12,6 +18,7 @@ public class Feed extends BaseTimeEntity {
     @Column(name = "feed_id")
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
     private String contents;
@@ -24,12 +31,16 @@ public class Feed extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Feed() {}
-
-    public Feed(String title, String contents, String feedImage, User user) {
+    // TODO: 파일 저장 및 로드는 완성되면 추가해야 함
+    @Builder
+    public Feed(String title, String contents, User user, String feedImage) {
         this.title = title;
         this.contents = contents;
-        this.feedImage = feedImage;
         this.user = user;
+        this.feedImage = feedImage;
     }
+
+    public void updateTitle(String title) { this.title = title; }
+    public void updateContents(String contents) { this.contents = contents; }
+    public void updateFeedImage(String feedImage) { this.feedImage = feedImage; }
 }
