@@ -1,7 +1,6 @@
 package com.example.newsfeed.global.config;
 
-
-import com.example.newsfeed.global.common.Interceptor.AuthInterceptor;
+import com.example.newsfeed.global.common.interceptor.AuthInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

@@ -18,8 +18,12 @@ public interface Response<T> {
         return new DefaultResponse<>(OK, data, LocalDateTime.now());
     }
 
-    static <T> Response<T> empty() {
-        return new DefaultResponse<>(OK, null, LocalDateTime.now());
+    static <T> Response<T> of(T data, String message) {
+        return new DefaultResponse<>(OK, data, message, LocalDateTime.now());
+    }
+
+    static <T> Response<T> empty(String message) {
+        return new DefaultResponse<>(OK, null, message, LocalDateTime.now());
     }
 
     static <T> Response<T> fail(HttpStatus status, List<ErrorDetail> errorDetails) {
