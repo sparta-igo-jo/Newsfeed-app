@@ -11,6 +11,7 @@ import static org.springframework.http.HttpStatus.*;
 @AllArgsConstructor
 public enum ErrorCode {
 
+
     // 유저 관련 예외 코드
     USER_EMAIL_DUPLICATION("다른 유저와 이메일이 중복됩니다.", CONFLICT),
     USER_NAME_DUPLICATION("다른 유저와 이름이 중복됩니다.", CONFLICT),

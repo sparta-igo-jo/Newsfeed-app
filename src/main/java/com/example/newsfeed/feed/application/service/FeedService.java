@@ -48,19 +48,15 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
-    public GetFeedResponseDto getFeed(Long feedId, Pageable pageable) {
+    public GetFeedResponseDto getFeed(Long feedId) {
         Feed findFeed = findFeedByFeedId(feedId);
-
-        //TODO:CommentService 에서 findCommentsByFeedId 매서드 생성 필요
-        Page<Comment> comments = commentService.findCommentsByFeedId(feedId, pageable);
-        return FeedConverter.toResponse(findFeed, comments);
+        return FeedConverter.toResponse(findFeed);
     }
 
      //나와 내가 팔로우한 사람들의 피드 목록 조회
     @Transactional(readOnly = true)
     public Page<GetAllFeedsResponseDto> getMyFeedsWithFollowing(Long sessionUserId, Pageable pageable) {
 
-        //TODO:FollowService 에서 findFollowingIdsByUserId 매서드 생성 필요
         List<Long> followingIds = followService.findFollowingIdsByUserId(sessionUserId);
         followingIds.add(sessionUserId);
         Page<Feed> feeds = feedRepository.findByUserIdIn(followingIds, pageable);

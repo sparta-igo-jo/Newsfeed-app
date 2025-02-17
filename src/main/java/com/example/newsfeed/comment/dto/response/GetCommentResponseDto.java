@@ -13,18 +13,15 @@ public class GetCommentResponseDto {
 
     private final Long id;
     private final String content;
-    private final LocalDateTime createdDate;
     private final LocalDateTime updatedDate;
     private final String username;
-    private final Long feedId;
 
-    public static GetCommentResponseDto of(Long id, String content, LocalDateTime createdAt,
-                                           LocalDateTime updatedAt, String userName, Long feedId) {
-        return new GetCommentResponseDto(id, content, createdAt, updatedAt, userName, feedId);
-    }
-
-    @Deprecated
-    public static GetCommentResponseDto fromEntity(Comment comment) {
-        return CommentConverter.toDto(comment);
+    public static GetCommentResponseDto of(Comment comment) {
+        return new GetCommentResponseDto(
+                comment.getId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                comment.getUser().getName()
+        );
     }
 }
