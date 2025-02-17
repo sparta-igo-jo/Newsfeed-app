@@ -1,5 +1,6 @@
 package com.example.newsfeed.global.common.exception;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -46,4 +47,7 @@ public enum ErrorCode {
     private final String message;
     private final HttpStatus httpStatus;
 
+    public void apply(HttpServletResponse response) {
+        response.setStatus(httpStatus.value());
+    }
 }

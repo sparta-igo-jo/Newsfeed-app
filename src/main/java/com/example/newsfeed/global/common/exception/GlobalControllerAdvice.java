@@ -31,17 +31,9 @@ public class GlobalControllerAdvice {
         HttpServletResponse response
     ) {
         List<ErrorDetail> errorDetails = be.getErrorDetails();
-        Set<HttpStatus> uniqueStatuses = errorDetails.stream()
-            .map(detail -> detail.getErrorCode().getHttpStatus())
-            .collect(Collectors.toSet());
-
-        // 고유 상태 코드가 하나만 존재하면 해당 코드, 그렇지 않으면 400(BAD_REQUEST) 사용
-        HttpStatus finalStatus = uniqueStatuses.size() == 1
-            ? uniqueStatuses.iterator().next()
-            : BAD_REQUEST;
-
-        response.setStatus(finalStatus.value());
-        return Response.fail(finalStatus, errorDetails);
+        ErrorCode errorCode = errorDetails.get(0).getErrorCode();
+        errorCode.apply(response);
+        return Response.fail(errorCode.getHttpStatus(), errorDetails);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
