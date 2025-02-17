@@ -17,8 +17,10 @@ import static com.example.newsfeed.global.common.exception.ErrorCode.*;
 @Service
 @RequiredArgsConstructor
 public class FollowService {
+
     private final FollowRepository followRepository;
     private final UserService userService;
+    
     @Transactional
     public boolean toggleFollow(Long userId, Long targetUserId) {
 
