@@ -14,7 +14,7 @@ import com.example.newsfeed.user.application.service.UserService;
 import com.example.newsfeed.follow.application.service.FollowService;
 import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.user.entity.User;
-import com.example.newsfeed.user.entity.Comment;
+import com.example.newsfeed.comment.entity.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
