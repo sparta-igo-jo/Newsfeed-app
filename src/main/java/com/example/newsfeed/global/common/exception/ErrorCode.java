@@ -7,6 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    USER_EMAIL_DUPLICATION("UserEmailDuplication", "다른 유저와 이메일이 중복됩니다."),
+    USER_NAME_DUPLICATION("UserNameDuplication", "다른 유저와 이름이 중복됩니다."),
+    USER_NOT_LOGIN("UserNotLogin", "로그인이 필요합니다. 로그인을 해주세요."),
     USER_NOT_FOUND("UserNotFound", "해당하는 유저를 찾을 수 없습니다."),
     INVALID_PASSWORD("InvalidPassword", "패스워드가 올바르지 않습니다."),
     UPLOAD_FAILED("UploadFailed", "파일 업로드에 실패했습니다."),
