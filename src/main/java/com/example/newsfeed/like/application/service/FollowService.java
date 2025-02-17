@@ -36,15 +36,15 @@ public class FollowService {
         return followRepository.findByFollowerAndFollowing(follower, following)
                 // A유저가  B유저를 팔로잉 하는 상황
                 .map(existingFollow -> { // A유저 팔로잉 리스트에 이미 B가 존재한다면
-                    followRepository.delete(existingFollow);
                     follower.decreaseFollowings(); // A의 팔로잉 수 -1
                     following.decreaseFollowers(); // B의 팔로워 수 -1
+                    followRepository.delete(existingFollow);
                     return false; // 언팔로우 처리
                 })
                 .orElseGet(() -> { // A유저 팔로잉 리스트에 이미 B가 존재X
-                    followRepository.save(new Follow(follower, following));
                     follower.increaseFollowings(); // A의 팔로잉 수 +1
                     following.increaseFollowers(); // B의 팔로워 수 +1
+                    followRepository.save(Follow.of(follower, following));
                     return true; // 팔로우 처리
                 });
     }

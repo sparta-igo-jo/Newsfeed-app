@@ -2,15 +2,20 @@ package com.example.newsfeed.like.entity;
 
 import com.example.newsfeed.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "follows")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow {
 
     @Id
@@ -25,15 +30,15 @@ public class Follow {
     @JoinColumn(name = "following_id", referencedColumnName = "user_id", nullable = false)
     private User following;
 
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public static Follow of(User follower, User following){
+        return new Follow(follower, following);
     }
 
-    public Follow(User follower, User following) {
+    private Follow(User follower, User following) {
         this.follower = follower;
         this.following = following;
     }
