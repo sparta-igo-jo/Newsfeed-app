@@ -3,20 +3,17 @@ package com.example.newsfeed.feed.controller;
 import com.example.newsfeed.feed.application.service.FeedService;
 import com.example.newsfeed.feed.dto.request.CreateFeedRequestDto;
 import com.example.newsfeed.feed.dto.request.UpdateFeedRequestDto;
-import com.example.newsfeed.feed.dto.response.CreateFeedResponseDto;
 import com.example.newsfeed.feed.dto.response.GetAllFeedsResponseDto;
 import com.example.newsfeed.feed.dto.response.GetFeedResponseDto;
+import com.example.newsfeed.global.common.Const.SessionConst;
 import com.example.newsfeed.global.response.Response;
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/feeds")
@@ -27,45 +24,63 @@ public class FeedController {
 
     @PostMapping
     public Response<Long> createFeed(
-            @RequestParam Long userId,
-            @RequestBody CreateFeedRequestDto dto
+            @RequestBody CreateFeedRequestDto dto,
+            HttpSession session
     ) {
-        Long createdFeedId = feedService.createFeed(userId, dto);
+        Long sessionUserId = (Long) session.getAttribute(SessionConst.LOGIN_USER);
+        Long createdFeedId = feedService.createFeed(sessionUserId, dto);
         return Response.of(createdFeedId);
     }
 
-    @GetMapping("/user/{userId}")
+    // 선택한 피드의 상세정보(댓글을 포함한)
+    @GetMapping("/{feedId}")
     public Response<GetFeedResponseDto> getFeed(
             @PathVariable Long feedId,
             @PageableDefault(page = 0, size = 10, sort = "updateAt", direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        GetFeedResponseDto getFeedDto = feedService.getFeed(feedId, pageable);
-        return Response.of(getFeedDto);
+        GetFeedResponseDto feed = feedService.getFeed(feedId, pageable);
+        return Response.of(feed);
     }
 
-    // 나와 내가 팔로우한 사람들의 피드 조회
-    //TODO: 사용자 인증 후, HttpServletRequest 객체에서 userId를 가져오는 식으로 변경?
-    @GetMapping("/main/{userId}")
-    public Response<Page<GetAllFeedsResponseDto>> getFeeds(
+    // 나와 내가 팔로우한 사람들의 피드 목록 조회
+    @GetMapping
+    public Response<Page<GetAllFeedsResponseDto>> getMyFeedsWithFollowing(
+            @PageableDefault(page = 0, size = 10, sort = "updateAt", direction = Sort.Direction.DESC) Pageable pageable,
+            HttpSession session
+    ) {
+        Long sessionUserId = (Long) session.getAttribute(SessionConst.LOGIN_USER);
+        Page<GetAllFeedsResponseDto> myFeeds = feedService.getMyFeedsWithFollowing(sessionUserId, pageable);
+        return Response.of(myFeeds);
+    }
+
+    // 내가 선택한 사람의 피드 목록 조회
+    @GetMapping("/user/{userId}")
+    public Response<Page<GetAllFeedsResponseDto>> getUserFeeds(
             @PathVariable Long userId,
             @PageableDefault(page = 0, size = 10, sort = "updateAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        Page<GetAllFeedsResponseDto> getFeedsDto = feedService.getFeeds(userId, pageable);
-        return Response.of(getFeedsDto);
+        Page<GetAllFeedsResponseDto> userFeeds = feedService.getUserFeeds(userId, pageable);
+        return Response.of(userFeeds);
     }
 
     @PatchMapping("/{feedId}")
     public Response<Long> updateFeed(
             @PathVariable Long feedId,
-            @RequestBody UpdateFeedRequestDto dto
+            @RequestBody UpdateFeedRequestDto dto,
+            HttpSession session
     ) {
-        Long updatedFeedId = feedService.updateFeed(feedId, dto);
+        Long sessionUserId = (Long) session.getAttribute(SessionConst.LOGIN_USER);
+        Long updatedFeedId = feedService.updateFeed(sessionUserId, feedId, dto);
         return Response.of(updatedFeedId);
     }
 
     @DeleteMapping("/{feedId}")
-    public Response<Void> deleteFeed(@PathVariable Long feedId) {
-        feedService.deleteFeed(feedId);
+    public Response<Void> deleteFeed(
+            @PathVariable Long feedId,
+            HttpSession session
+    ) {
+        Long sessionUserId = (Long) session.getAttribute(SessionConst.LOGIN_USER);
+        feedService.deleteFeed(sessionUserId, feedId);
         return Response.empty();
     }
 
