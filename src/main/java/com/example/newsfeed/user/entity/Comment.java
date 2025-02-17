@@ -1,41 +1,40 @@
 package com.example.newsfeed.user.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Entity
-@Table(name = "commments")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Table(name = "comments")
 public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "longtext", nullable = false)
-    private String comment;
+    @Column(name = "comments", nullable = false)
+    private String content;
 
-    @Column(name = "created_date")
     @CreatedDate
+    @Column(name = "created_date", updatable = false)
     private LocalDateTime createdDate;
 
-    @Column(name = "updated_date")
     @LastModifiedDate
+    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "feeds_id")
+    @JoinColumn(name = "feeds_id", nullable = false)
     private Feeds feeds;
-
-    public void update(String comment) {
-        this.comment = comment;
-    }
 }
