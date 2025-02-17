@@ -6,11 +6,11 @@ import com.example.newsfeed.auth.dto.response.LoginUserResponseDto;
 import com.example.newsfeed.auth.dto.response.SignUpUserResponseDto;
 import com.example.newsfeed.global.common.Const.SessionConst;
 import com.example.newsfeed.global.response.Response;
-import com.example.newsfeed.user.dto.request.CreateUserRequestDto;
+import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,14 +21,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public Response<SignUpUserResponseDto> signUpUser(@Validated @RequestBody CreateUserRequestDto dto) {
+    public Response<SignUpUserResponseDto> signUpUser(@Valid @RequestBody SignUpUserRequestDto dto) {
         SignUpUserResponseDto createUserDto = authService.signUpUser(dto);
         return Response.of(createUserDto);
     }
 
     @PostMapping("/login")
     public Response<LoginUserResponseDto> loginUser(
-            @Validated @RequestBody LoginUserRequestDto dto,
+            @Valid @RequestBody LoginUserRequestDto dto,
             HttpServletRequest request
     ) {
         LoginUserResponseDto loginUserDto = authService.loginUser(dto);
