@@ -15,7 +15,7 @@ public class Feed extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feed_id")
+    @Column(name = "id")
     private Long id;
 
     private String title;
