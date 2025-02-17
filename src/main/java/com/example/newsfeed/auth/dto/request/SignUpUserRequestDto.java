@@ -1,4 +1,4 @@
-package com.example.newsfeed.user.dto.request;
+package com.example.newsfeed.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class CreateUserRequestDto {
+public class SignUpUserRequestDto {
 
     @NotBlank
     @Pattern(
