@@ -65,12 +65,6 @@ public class AuthService {
         return AuthConverter.toLoginResponse(findUser);
     }
 
-    public void logoutUser(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-
-        if(session != null) session.invalidate();
-    }
-
     // 유저 이메일 중복 검사 메서드
     private void isUserEmailDuplication(String email) {
         if(authRepository.existsByEmail(email)) {
