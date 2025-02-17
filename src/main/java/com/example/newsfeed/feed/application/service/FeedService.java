@@ -35,7 +35,7 @@ public class FeedService {
     private final CommentService commentService;
 
     @Transactional
-    public CreateFeedResponseDto createFeed(Long userId, CreateFeedRequestDto dto) {
+    public Long createFeed(Long userId, CreateFeedRequestDto dto) {
         User findUser = userService.findUserById(userId);
         //TODO: 파일 저장 및 로드는 완성되면 추가해야 함
         Feed createFeed = Feed.builder()
@@ -44,7 +44,7 @@ public class FeedService {
                 .user(findUser)
                 .build();
         feedRepository.save(createFeed);
-        return FeedConverter.toResponse(createFeed);
+        return createFeed.getId();
     }
 
     @Transactional(readOnly = true)

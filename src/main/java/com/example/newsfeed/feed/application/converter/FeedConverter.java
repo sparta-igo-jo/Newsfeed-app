@@ -13,17 +13,6 @@ public class FeedConverter {
     private FeedConverter(){
     }
 
-    public static CreateFeedResponseDto toResponse(Feed feed) {
-        return CreateFeedResponseDto.of(
-                feed.getId(),
-                feed.getTitle(),
-                feed.getContents(),
-                feed.getFeedImage(),
-                feed.getLikeCount(),
-                feed.getUpdatedAt()
-        );
-    }
-
     public static GetFeedResponseDto toResponse(Feed feed, Page<Comment> comments) {
         return GetFeedResponseDto.of(
                 feed.getId(),

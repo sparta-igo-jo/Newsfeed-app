@@ -26,12 +26,12 @@ public class FeedController {
     private final FeedService feedService;
 
     @PostMapping
-    public Response<CreateFeedResponseDto> createFeed(
+    public Response<Long> createFeed(
             @RequestParam Long userId,
             @RequestBody CreateFeedRequestDto dto
     ) {
-        CreateFeedResponseDto getFeedDto = feedService.createFeed(userId, dto);
-        return Response.of(getFeedDto);
+        Long createdFeedId = feedService.createFeed(userId, dto);
+        return Response.of(createdFeedId);
     }
 
     @GetMapping("/user/{userId}")
