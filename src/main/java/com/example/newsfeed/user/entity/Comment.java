@@ -7,8 +7,6 @@ import lombok.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Table(name = "comments")
 public class Comment extends BaseTimeEntity {
 
@@ -16,7 +14,7 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "comments", nullable = false)
+    @Column(name = "content", nullable = false)
     private String content;
 
 
@@ -24,7 +22,14 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "feeds_id", nullable = false)
-    private Feeds feeds;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feed_id", nullable = false)
+    private Feed feed;
+
+    @Builder
+    public Comment(String content, User user, Feed feed) {
+        this.content = content;
+        this.user = user;
+        this.feed = feed;
+    }
 }

@@ -1,12 +1,13 @@
 package com.example.newsfeed.user.application.service;
 
+import com.example.newsfeed.global.common.exception.BaseException;
+import com.example.newsfeed.global.common.exception.ErrorCode;
 import com.example.newsfeed.user.dto.request.CreateCommentRequestDto;
 import com.example.newsfeed.user.dto.response.GetCommentResponseDto;
 import com.example.newsfeed.user.entity.Comment;
 import com.example.newsfeed.user.entity.User;
 import com.example.newsfeed.user.repository.CommentRepository;
 import com.example.newsfeed.user.repository.UserRepository;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,31 +16,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@Getter
 @RequiredArgsConstructor
 public class CommentService {
 
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
-    private final FeedsRepository feedsRepository;
+    private final FeedRepository feedRepository;
 
     /**
      * 댓글 생성
      */
     @Transactional
-    public GetCommentResponseDto createComment(CreateCommentRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId()).orElseThrow(
-                () -> new IllegalArgumentException("사용자를 찾을수 없습니다.")
+    public GetCommentResponseDto createComment(CreateCommentRequestDto requestDto, Long currentUserId, Long feedId) {
+
+        User user = userRepository.findById(currentUserId).orElseThrow(
+                () -> new BaseException(ErrorCode.FEED_NOT_FOUND, "userId")
         );
 
-        Feeds feeds = feedsRepository.findById(requestDto.getFeedsId()).orElseThrow(
-                () -> new IllegalArgumentException("게스글을 찾을 수 없습니다.")
+        Feed feed = feedRepository.findById(feedId).orElseThrow(
+                () -> new BaseException(ErrorCode.FEED_NOT_FOUND, "feedId")
         );
 
         Comment comment = Comment.builder()
                 .content(requestDto.getContent())
                 .user(user)
-                .feeds(feeds)
+                .feed(feed)
                 .build();
 
         commentRepository.save(comment);
@@ -47,23 +48,27 @@ public class CommentService {
     }
 
     /**
-     * 댓글 삭제
+     * 댓글 삭제 (유저 검증 추가)
      */
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, Long currentUserId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new IllegalArgumentException("댓글을 찾을수 없습니다.")
+                () -> new BaseException(ErrorCode.COMMENT_NOT_FOUND, "commentId")
         );
+
+        if (comment.getUser() == null || !comment.getUser().getId().equals(currentUserId)) {
+            throw new BaseException(ErrorCode.UNAUTHORIZED, "userId");
+        }
 
         commentRepository.delete(comment);
     }
 
     /**
-     * 특정 피드의 댓글을 페지이해서 조회
+     * 특정 피드의 댓글을 페이징해서 조회
      */
     @Transactional(readOnly = true)
     public Page<GetCommentResponseDto> findCommentsByFeedId(Long feedId, Pageable pageable) {
-        return commentRepository.findByFeedsId(feedId, pageable)
+        return commentRepository.findByFeedId(feedId, pageable)
                 .map(GetCommentResponseDto::fromEntity);
     }
 }
