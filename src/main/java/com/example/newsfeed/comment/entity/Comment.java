@@ -1,6 +1,8 @@
-package com.example.newsfeed.user.entity;
+package com.example.newsfeed.comment.entity;
 
+import com.example.newsfeed.feed.entity.Feed;
 import com.example.newsfeed.global.common.entity.BaseTimeEntity;
+import com.example.newsfeed.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

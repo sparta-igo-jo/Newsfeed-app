@@ -1,4 +1,4 @@
-package com.example.newsfeed.user.dto.response;
+package com.example.newsfeed.comment.dto.response;
 
 public class GetCommentIdResponseDto {
     private final Long id;
