@@ -44,7 +44,11 @@ public class FollowService {
                 .orElseGet(() -> { // A유저 팔로잉 리스트에 이미 B가 존재X
                     follower.increaseFollowings(); // A의 팔로잉 수 +1
                     following.increaseFollowers(); // B의 팔로워 수 +1
-                    followRepository.save(Follow.of(follower, following));
+                    Follow follow = Follow.builder()
+                            .follower(follower)
+                            .following(following)
+                            .build();
+                    followRepository.save(follow);
                     return true; // 팔로우 처리
                 });
     }

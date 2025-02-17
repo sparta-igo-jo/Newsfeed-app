@@ -34,11 +34,8 @@ public class Follow {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public static Follow of(User follower, User following){
-        return new Follow(follower, following);
-    }
-
-    private Follow(User follower, User following) {
+    @Builder
+    public Follow(User follower, User following) {
         this.follower = follower;
         this.following = following;
     }
