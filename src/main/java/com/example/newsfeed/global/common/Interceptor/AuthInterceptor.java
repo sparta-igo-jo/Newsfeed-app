@@ -1,7 +1,7 @@
 package com.example.newsfeed.global.common.Interceptor;
 
 import com.example.newsfeed.auth.exception.UserNotLoginException;
-import com.example.newsfeed.global.common.SessionConst;
+import com.example.newsfeed.global.common.Const.SessionConst;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
