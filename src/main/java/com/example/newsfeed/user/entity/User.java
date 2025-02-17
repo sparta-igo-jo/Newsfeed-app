@@ -61,4 +61,26 @@ public class User extends BaseTimeEntity {
     public void updateDescription(String description) {
         this.description = description;
     }
+
+    // 팔로우할 때 증가
+    public void increaseFollowings() {
+        this.followingsCount++;
+    }
+
+    public void increaseFollowers() {
+        this.followersCount++;
+    }
+
+    // 언팔로우할 때 감소 (0 이하로 내려가지 않게 보호)
+    public void decreaseFollowings() {
+        if (this.followingsCount > 0) {
+            this.followingsCount--;
+        }
+    }
+
+    public void decreaseFollowers() {
+        if (this.followersCount > 0) {
+            this.followersCount--;
+        }
+    }
 }
