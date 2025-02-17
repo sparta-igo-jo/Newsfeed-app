@@ -4,7 +4,7 @@ import com.example.newsfeed.auth.application.service.AuthService;
 import com.example.newsfeed.auth.dto.request.LoginUserRequestDto;
 import com.example.newsfeed.auth.dto.response.LoginUserResponseDto;
 import com.example.newsfeed.auth.dto.response.SignUpUserResponseDto;
-import com.example.newsfeed.global.common.Const.SessionConst;
+import com.example.newsfeed.global.common.constant.SessionConst;
 import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
