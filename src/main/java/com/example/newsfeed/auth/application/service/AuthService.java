@@ -8,7 +8,7 @@ import com.example.newsfeed.auth.exception.UserEmailDuplicationExcepion;
 import com.example.newsfeed.auth.exception.UserNameDuplicationException;
 import com.example.newsfeed.auth.repository.AuthRepository;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
-import com.example.newsfeed.user.dto.request.CreateUserRequestDto;
+import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import com.example.newsfeed.user.entity.User;
 import com.example.newsfeed.user.exception.InvalidPasswordException;
 import com.example.newsfeed.user.exception.UserNotFoundException;
@@ -30,9 +30,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public SignUpUserResponseDto signUpUser(CreateUserRequestDto dto) {
-        userEmailDuplication(dto.getEmail());
-        userNameDuplication(dto.getName());
+    public SignUpUserResponseDto signUpUser(SignUpUserRequestDto dto) {
+        isUserEmailDuplication(dto.getEmail());
+        isUserNameDuplication(dto.getName());
 
         User createUser = authRepository.save(
                 new User(
@@ -45,6 +45,7 @@ public class AuthService {
         return AuthConverter.toSignUpResponse(createUser);
     }
 
+    @Transactional(readOnly = true)
     public LoginUserResponseDto loginUser(LoginUserRequestDto dto) {
         User findUser = authRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() ->
@@ -71,7 +72,7 @@ public class AuthService {
     }
 
     // 유저 이메일 중복 검사 메서드
-    private void userEmailDuplication(String email) {
+    private void isUserEmailDuplication(String email) {
         if(authRepository.existsByEmail(email)) {
             throw new UserEmailDuplicationExcepion(List.of(
                     new ErrorDetail(
@@ -82,7 +83,7 @@ public class AuthService {
     }
 
     // 유저 이름 중복 검사 메서드
-    private void userNameDuplication(String name) {
+    private void isUserNameDuplication(String name) {
         if(authRepository.existsByName(name)) {
             throw new UserNameDuplicationException(List.of(
                new ErrorDetail(
