@@ -5,7 +5,9 @@ import com.example.newsfeed.auth.dto.response.SignUpUserResponseDto;
 import com.example.newsfeed.user.entity.User;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public class AuthConverter {
 
     public static SignUpUserResponseDto toSignUpResponse(User user) {
