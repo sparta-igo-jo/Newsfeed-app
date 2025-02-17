@@ -1,4 +1,4 @@
-package com.example.newsfeed.like.exception;
+package com.example.newsfeed.follow.exception;
 
 import com.example.newsfeed.global.common.exception.BaseException;
 import com.example.newsfeed.global.common.exception.ErrorDetail;

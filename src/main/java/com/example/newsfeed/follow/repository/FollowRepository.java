@@ -1,6 +1,6 @@
-package com.example.newsfeed.like.repository;
+package com.example.newsfeed.follow.repository;
 
-import com.example.newsfeed.like.entity.Follow;
+import com.example.newsfeed.follow.entity.Follow;
 import com.example.newsfeed.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
