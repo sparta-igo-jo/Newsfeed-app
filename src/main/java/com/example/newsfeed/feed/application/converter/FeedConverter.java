@@ -1,6 +1,5 @@
 package com.example.newsfeed.feed.application.converter;
 
-import com.example.newsfeed.feed.dto.response.CreateFeedResponseDto;
 import com.example.newsfeed.feed.dto.response.GetAllFeedsResponseDto;
 import com.example.newsfeed.feed.dto.response.GetFeedResponseDto;
 import com.example.newsfeed.feed.entity.Feed;
