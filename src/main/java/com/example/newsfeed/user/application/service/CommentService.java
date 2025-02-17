@@ -1,13 +1,15 @@
 package com.example.newsfeed.user.application.service;
 
+import com.example.newsfeed.feed.application.service.FeedService;
+import com.example.newsfeed.feed.entity.Feed;
 import com.example.newsfeed.global.common.exception.BaseException;
 import com.example.newsfeed.global.common.exception.ErrorCode;
 import com.example.newsfeed.user.dto.request.CreateCommentRequestDto;
+import com.example.newsfeed.user.dto.response.GetCommentIdResponseDto;
 import com.example.newsfeed.user.dto.response.GetCommentResponseDto;
 import com.example.newsfeed.user.entity.Comment;
 import com.example.newsfeed.user.entity.User;
 import com.example.newsfeed.user.repository.CommentRepository;
-import com.example.newsfeed.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +29,7 @@ public class CommentService {
      * 댓글 생성
      */
     @Transactional
-    public GetCommentResponseDto createComment(CreateCommentRequestDto requestDto, Long currentUserId, Long feedId) {
+    public GetCommentIdResponseDto createComment(CreateCommentRequestDto requestDto, Long currentUserId, Long feedId) {
 
         User user = userService.findById(currentUserId);
 
@@ -40,7 +42,7 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-        return GetCommentResponseDto.fromEntity(comment);
+        return new GetCommentIdResponseDto(comment.getId());
     }
 
     /**

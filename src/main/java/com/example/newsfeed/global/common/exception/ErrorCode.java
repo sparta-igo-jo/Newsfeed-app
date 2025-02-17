@@ -15,7 +15,6 @@ public enum ErrorCode {
     UPLOAD_FAILED("UploadFailed", "파일 업로드에 실패했습니다."),
     FILE_NOT_FOUND("FileNotFound", "파일을 찾을 수 없습니다."),
     PASSWORD_SAME_AS_OLD("PasswordSameAsOld", "이전 패스워드와 동일할 수 없습니다."),
- feature/comments
 
     /**
      * 댓글용 에러 코드
@@ -23,9 +22,6 @@ public enum ErrorCode {
     FEED_NOT_FOUND("FeedNotFound", "해당하는 게시글을 찾을 수 없습니다."),
     COMMENT_NOT_FOUND("CommentNotFound", "해당하는 댓글을 찾을 수 없습니다."),
     UNAUTHORIZED("Unauthorized", "권한이 없습니다.");
-
-
- develop
 
     private final String code;
     private final String message;
