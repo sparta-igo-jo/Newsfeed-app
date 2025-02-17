@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
-    private final FeedRepository feedRepository;
+    private final UserService userService;
+    private final FeedService feedService;
 
     /**
      * 댓글 생성
@@ -29,13 +29,9 @@ public class CommentService {
     @Transactional
     public GetCommentResponseDto createComment(CreateCommentRequestDto requestDto, Long currentUserId, Long feedId) {
 
-        User user = userRepository.findById(currentUserId).orElseThrow(
-                () -> new BaseException(ErrorCode.FEED_NOT_FOUND, "userId")
-        );
+        User user = userService.findById(currentUserId);
 
-        Feed feed = feedRepository.findById(feedId).orElseThrow(
-                () -> new BaseException(ErrorCode.FEED_NOT_FOUND, "feedId")
-        );
+        Feed feed = feedService.findById(feedId);
 
         Comment comment = Comment.builder()
                 .content(requestDto.getContent())
