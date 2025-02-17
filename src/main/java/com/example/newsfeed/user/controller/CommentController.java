@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,12 +20,11 @@ public class CommentController {
     private final CommentService commentService;
 
     /**
-     * 새로운 댓글 작성
+     * 댓글 생성
      */
     @PostMapping
-    public ResponseEntity<Comment> createComment(@RequestBody CreateCommentRequestDto requestDto) {
-        Comment savedComment = commentService.createComment(requestDto);
-        return ResponseEntity.ok(savedComment);
+    public ResponseEntity<GetCommentResponseDto> createComment(@Validated @RequestBody CreateCommentRequestDto requestDto) {
+        return ResponseEntity.ok(commentService.createComment(requestDto));
     }
 
     /**
