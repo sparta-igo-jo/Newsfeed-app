@@ -69,7 +69,9 @@ public class FeedService {
 
     @Transactional
     public Long updateFeed(Long sessionUserId, Long feedId, UpdateFeedRequestDto dto) {
-        Feed findFeed = getFeedAfterAuthorization(sessionUserId, feedId);
+        User findUser = userService.findUserById(sessionUserId);
+        Feed findFeed = findFeedByFeedId(feedId);
+        checkPermission(findUser, findFeed);
 
         if (findFeed.getTitle().equals(dto.getTile())
                 && findFeed.getContents().equals(dto.getContents())
@@ -87,19 +89,18 @@ public class FeedService {
 
     @Transactional
     public void deleteFeed(Long sessionUserId, Long feedId) {
-        Feed findFeed = getFeedAfterAuthorization(sessionUserId, feedId);
+        User findUser = userService.findUserById(sessionUserId);
+        Feed findFeed = findFeedByFeedId(feedId);
+        checkPermission(findUser, findFeed);
         feedRepository.delete(findFeed);
     }
 
-    private Feed getFeedAfterAuthorization(Long sessionUserId, Long feedId) {
-        User findUser = userService.findUserById(sessionUserId);
-        Feed findFeed = findFeedByFeedId(feedId);
+    private void checkPermission(User findUser, Feed findFeed) {
         if (!findFeed.getUser().equals(findUser)) {
             throw new FeedUpdateFailedException(List.of(
                     new ErrorDetail(FEED_ACCESS_DENIED, null, FEED_ACCESS_DENIED.getMessage())
             ));
         }
-        return findFeed;
     }
 
     public Feed findFeedByFeedId(Long feedId) {
@@ -110,7 +111,7 @@ public class FeedService {
     }
 
     public void deleteFeedsByUserId(Long userId) {
-        Page<Feed> feeds = feedRepository.findByUser(userService.findUserById(userId));
+        List<Feed> feeds = feedRepository.findFeedByUser_Id(userId);
         feedRepository.deleteAll(feeds);
     }
 }
