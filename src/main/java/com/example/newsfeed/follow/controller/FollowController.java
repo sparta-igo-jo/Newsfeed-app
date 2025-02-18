@@ -17,10 +17,9 @@ public class FollowController {
 
     @PostMapping("follows/{targetUserId}")
     public Response<String> follow(
-            HttpSession session,
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId,
             @PathVariable Long targetUserId
     ) {
-        Long sessionUserId = (Long) session.getAttribute(SessionConst.LOGIN_USER);
         boolean isFollowing = followService.toggleFollow(sessionUserId, targetUserId);
         return Response.of(isFollowing ? "팔로우" : "언팔로우");
     }
