@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.example.newsfeed.global.common.constant.ImageUrlConst.DEFAULT_PROFILE_IMAGE_PATH;
 import static com.example.newsfeed.global.common.exception.ErrorCode.UPLOAD_FAILED;
-import static com.example.newsfeed.global.common.file.FileType.FEEDS;
-import static com.example.newsfeed.global.common.file.FileType.PROFILE;
+import static com.example.newsfeed.global.common.file.FileType.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
@@ -38,6 +38,11 @@ public class LocalFileService implements FileService {
     @Override
     public String uploadImage(String type, MultipartFile file, Long sessionUserId) {
         User getSessionUser = userService.findUserById(sessionUserId);
+
+        // 프로필 이미지를 기본 이미지로 변경
+        if (DEFAULT.getType().equalsIgnoreCase(type) && file.isEmpty()) {
+            return DEFAULT_PROFILE_IMAGE_PATH;
+        }
 
         // 이메일 암호화
         String convertEmail = DigestUtils.md5DigestAsHex(getSessionUser.getEmail().getBytes());

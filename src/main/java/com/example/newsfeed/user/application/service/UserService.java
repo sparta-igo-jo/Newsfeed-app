@@ -1,5 +1,8 @@
 package com.example.newsfeed.user.application.service;
 
+import com.example.newsfeed.comment.application.service.CommentService;
+import com.example.newsfeed.feed.application.service.FeedService;
+import com.example.newsfeed.follow.application.service.FollowService;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import com.example.newsfeed.user.application.converter.UserConverter;
 import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
@@ -31,6 +34,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FeedService feedService;
+    private final CommentService commentService;
+    private final FollowService followService;
 
     // 유저 단건 조회
     @Transactional(readOnly = true)
@@ -66,7 +72,9 @@ public class UserService {
             findUser.updateDescription(dto.getDescription());
         }
 
-        //TODO: 파일 저장 및 로드는 완성되면 추가해야 함
+        if (dto.getImagePath() != null) {
+            findUser.updateProfileImage(dto.getImagePath());
+        }
 
         return findUser.getId();
     }
@@ -103,7 +111,16 @@ public class UserService {
         checkUserPermission(userId, sessionUserId);
         User findUser = findUserById(userId);
         validatePassword(dto.getPassword(), findUser.getPassword());
-        //TODO: 피드 및 댓글까지 전부 삭제해야 함
+
+        // 탈퇴 유저가 팔로우한 유저들의 팔로워 수를 줄임
+        followService.decreaseFollowersOfFollowedUsers(findUser.getId());
+
+        // 탈퇴 유저를 팔로워한 유저들의 팔로잉 수를 줄임
+        followService.decreaseFollowingsOfFollowers(findUser.getId());
+        
+        // 탈퇴하려는 유저와 관련된 댓글과 피드 모두 삭제
+        commentService.deleteCommentsByUserId(findUser.getId());
+        feedService.deleteFeedsByUserId(findUser.getId());
         userRepository.deleteUserById(userId);
     }
 

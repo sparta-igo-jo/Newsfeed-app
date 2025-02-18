@@ -16,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class UserController {
     public Response<Long> updateUserProfile(
         @PathVariable Long userId,
         @Valid @RequestBody UpdateUserRequestDto dto,
-        @SessionAttribute Long sessionUserId
+        @SessionAttribute(LOGIN_USER) Long sessionUserId
     ) {
         Long updatedUserId = userService.updateUserProfile(userId, dto, sessionUserId);
         return Response.of(updatedUserId, "프로필 수정 성공");
@@ -52,7 +54,7 @@ public class UserController {
     public Response<Long> updateUserPassword(
         @PathVariable Long userId,
         @Valid @RequestBody UpdateUserPasswordRequestDto dto,
-        @SessionAttribute Long sessionUserId
+        @SessionAttribute(LOGIN_USER) Long sessionUserId
     ) {
         Long updatedUserId = userService.updateUserPassword(userId, dto, sessionUserId);
         return Response.of(updatedUserId, "패스워드 교체 성공");
@@ -62,7 +64,7 @@ public class UserController {
     public Response<Void> deleteUser(
         @PathVariable Long userId,
         @Valid @RequestBody DeleteUserRequestDto dto,
-        @SessionAttribute Long sessionUserId
+        @SessionAttribute(LOGIN_USER) Long sessionUserId
     ) {
         userService.deleteUser(userId, dto, sessionUserId);
         return Response.empty("회원 탈퇴 성공");

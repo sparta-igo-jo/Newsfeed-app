@@ -5,19 +5,20 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = PROTECTED)
 @Table(name = "users")
 public class User extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
