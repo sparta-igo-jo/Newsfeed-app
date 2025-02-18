@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.List;
 
+import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
 import static com.example.newsfeed.global.common.exception.ErrorCode.USER_NOT_LOGIN;
 
 public class AuthInterceptor implements HandlerInterceptor {
@@ -22,7 +23,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     ) {
         HttpSession session = request.getSession(false);
 
-        if(session == null || session.getAttribute(SessionConst.LOGIN_USER) == null) {
+        if(session == null || session.getAttribute(LOGIN_USER) == null) {
             // TODO : GlobalExceptionHandler 에서 예외처리 필요
             throw new UserNotLoginException(List.of(
                     new ErrorDetail(USER_NOT_LOGIN, null, USER_NOT_LOGIN.getMessage())

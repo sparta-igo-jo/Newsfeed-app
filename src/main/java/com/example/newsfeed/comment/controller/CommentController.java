@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
+
 
 @RestController
 @RequestMapping("/comments")
@@ -26,7 +28,7 @@ public class CommentController {
     @PostMapping
     public Response<GetCommentResponseDto> createComment(
             @RequestBody CreateCommentRequestDto dto,
-            @SessionAttribute(name = SessionConst.LOGIN_USER) Long userId,
+            @SessionAttribute(name = LOGIN_USER) Long userId,
             @RequestParam Long feedId
     ) {
         GetCommentResponseDto feedIdCreatedComment = commentService.createComment(dto, userId, feedId);
@@ -46,7 +48,7 @@ public class CommentController {
     public Response<UpdateCommentResponseDto> updateComment(
             @PathVariable Long commentId,
             @RequestBody UpdateCommnetRequestDto dto,
-            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
+            @SessionAttribute(name = LOGIN_USER) Long sessionUserId
     ) {
         UpdateCommentResponseDto feedIdUpdatedComment = commentService.updateComment(commentId, sessionUserId, dto);
         return Response.of(feedIdUpdatedComment, "댓글이 수정되었습니다.");
@@ -55,7 +57,7 @@ public class CommentController {
     @DeleteMapping("/{commentId}")
     public Response<Void> deleteComment(
             @PathVariable Long commentId,
-            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
+            @SessionAttribute(name = LOGIN_USER) Long sessionUserId
     ) {
         commentService.deleteComment(commentId, sessionUserId);
         return Response.empty("댓글이 삭제되었습니다.");
