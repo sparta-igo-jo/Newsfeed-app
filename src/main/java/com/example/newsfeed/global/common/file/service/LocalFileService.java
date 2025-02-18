@@ -1,6 +1,7 @@
 package com.example.newsfeed.global.common.file.service;
 
 import com.example.newsfeed.global.common.exception.ErrorDetail;
+import com.example.newsfeed.global.common.file.FileType;
 import com.example.newsfeed.global.common.file.exception.FileUploadFailedException;
 import com.example.newsfeed.user.application.service.UserService;
 import com.example.newsfeed.user.entity.User;
@@ -23,7 +24,7 @@ import java.util.UUID;
 
 import static com.example.newsfeed.global.common.constant.ImageUrlConst.DEFAULT_PROFILE_IMAGE_PATH;
 import static com.example.newsfeed.global.common.exception.ErrorCode.UPLOAD_FAILED;
-import static com.example.newsfeed.global.common.file.FileType.*;
+import static com.example.newsfeed.global.common.file.FileType.from;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
@@ -39,23 +40,14 @@ public class LocalFileService implements FileService {
     public String uploadImage(String type, MultipartFile file, Long sessionUserId) {
         User getSessionUser = userService.findUserById(sessionUserId);
 
-        // 프로필 이미지를 기본 이미지로 변경
-        if (DEFAULT.getType().equalsIgnoreCase(type) && file.isEmpty()) {
-            return DEFAULT_PROFILE_IMAGE_PATH;
-        }
+        // 업로드하는 타입에 따라 하위 폴더명 설정
+        FileType fileType = from(type);
+
+        // 기본 이미지 변경 요청일 경우, 파일 업로드 없이 바로 기본 프로필 이미지 경로 반환
+        String subDirectory = fileType.resolveSubDirectory(file, DEFAULT_PROFILE_IMAGE_PATH);
 
         // 이메일 암호화
         String convertEmail = DigestUtils.md5DigestAsHex(getSessionUser.getEmail().getBytes());
-
-        // 업로드하는 타입에 따라 하위 폴더명 설정
-        String subDirectory;
-        if (PROFILE.getType().equalsIgnoreCase(type)) {
-            subDirectory = "profile";
-        } else if (FEEDS.getType().equalsIgnoreCase(type)) {
-            subDirectory = "feeds";
-        } else {
-            subDirectory = "others";
-        }
 
         // 업로드하는 시간을 가져와서 연/월/일로 변환
         String datePath = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
@@ -77,7 +69,7 @@ public class LocalFileService implements FileService {
 
             // uploadPath에 fileName을 더한 최종 경로를 반환
             Path filePath = uploadPath.resolve(fileName);
-            
+
             // file.getInputStream()으로 읽은 뒤 filePath에 동일한 파일이 있을 경우 덮어쓰기 후 저장
             Files.copy(file.getInputStream(), filePath, REPLACE_EXISTING);
 

@@ -34,6 +34,7 @@ public enum ErrorCode {
 
     // 파일 관련 예외 코드
     UPLOAD_FAILED("파일 업로드에 실패했습니다.", INTERNAL_SERVER_ERROR),
+    UN_SUPPORTED_FILE_TYPE("지원하지 않는 파일 타입입니다.", BAD_REQUEST),
     FILE_NOT_FOUND("파일을 찾을 수 없습니다.", NOT_FOUND),
 
 
