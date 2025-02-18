@@ -60,8 +60,8 @@ public class CommentService {
             Long sessionUserId,
             UpdateCommnetRequestDto dto
     ) {
+        checkUserPermission(commentId, sessionUserId);
         Comment comment = findCommentById(commentId);
-        checkUserPermission(comment, sessionUserId);
 
         comment.updateContent(dto.getContent());
 
@@ -70,8 +70,8 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(Long commentId, Long sessionUserId) {
+        checkUserPermission(commentId, sessionUserId);
         Comment comment = findCommentById(commentId);
-        checkUserPermission(comment, sessionUserId);
 
         commentRepository.delete(comment);
     }
@@ -94,11 +94,11 @@ public class CommentService {
     }
 
     // 자신이 해당 댓글의 작성자가 아닐 때의 예외처리
-    private void checkUserPermission(Comment comment, Long sessionUserId) {
-        if (!comment.getUser().getId().equals(sessionUserId)) {
+    private void checkUserPermission(Long commentId, Long sessionUserId) {
+        if (!commentRepository.findUserIdByCommentId(commentId).equals(sessionUserId)) {
             throw new UnauthorizedUserException(List.of(
-                    new ErrorDetail(COMMENT_ACCESS_DENIED, null, COMMENT_ACCESS_DENIED.getMessage()))
-            );
+                    new ErrorDetail(COMMENT_ACCESS_DENIED, null, COMMENT_ACCESS_DENIED.getMessage())
+            ));
         }
     }
 }
