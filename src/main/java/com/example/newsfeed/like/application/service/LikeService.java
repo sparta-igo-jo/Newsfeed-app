@@ -40,7 +40,7 @@ public class LikeService {
     }
 
    @Transactional
-   void decreaseLikesOfFeeds(Long sessionUserId){
+   public void decreaseLikesOfFeeds(Long sessionUserId){
         likeRepository.decreaseLikesOfFeeds(sessionUserId);
    }
 }

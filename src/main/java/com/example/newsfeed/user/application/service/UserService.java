@@ -4,6 +4,7 @@ import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.feed.application.service.FeedService;
 import com.example.newsfeed.follow.application.service.FollowService;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
+import com.example.newsfeed.like.application.service.LikeService;
 import com.example.newsfeed.user.application.converter.UserConverter;
 import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
 import com.example.newsfeed.user.dto.request.SearchUserRequestDto;
@@ -37,6 +38,7 @@ public class UserService {
     private final FeedService feedService;
     private final CommentService commentService;
     private final FollowService followService;
+    private final LikeService likeService;
 
     // 유저 단건 조회
     @Transactional(readOnly = true)
@@ -117,6 +119,9 @@ public class UserService {
 
         // 탈퇴 유저를 팔로워한 유저들의 팔로잉 수를 줄임
         followService.decreaseFollowingsOfFollowers(findUser.getId());
+
+        // 탈퇴 유저가 좋아요한 피드들의 좋아요 수를 줄임
+        likeService.decreaseLikesOfFeeds(sessionUserId);
         
         // 탈퇴하려는 유저와 관련된 댓글과 피드 모두 삭제
         commentService.deleteCommentsByUserId(findUser.getId());
