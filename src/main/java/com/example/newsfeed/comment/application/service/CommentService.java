@@ -4,6 +4,7 @@ import com.example.newsfeed.comment.application.converter.CommentConverter;
 import com.example.newsfeed.comment.dto.request.CreateCommentRequestDto;
 import com.example.newsfeed.comment.dto.request.UpdateCommnetRequestDto;
 import com.example.newsfeed.comment.dto.response.GetCommentResponseDto;
+import com.example.newsfeed.comment.dto.response.UpdateCommentResponseDto;
 import com.example.newsfeed.comment.entity.Comment;
 import com.example.newsfeed.comment.exception.CommentNotFoundException;
 import com.example.newsfeed.comment.exception.UnauthorizedUserException;
@@ -21,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.newsfeed.global.common.exception.ErrorCode.COMMENT_NOT_FOUND;
 import static com.example.newsfeed.global.common.exception.ErrorCode.*;
 
 @Service
@@ -34,20 +34,22 @@ public class CommentService {
 
 
     @Transactional
-    public Long createComment(CreateCommentRequestDto dto, Long userId, Long feedId) {
-
-        User user = userService.findUserById(userId);
-
+    public GetCommentResponseDto createComment(
+            CreateCommentRequestDto dto,
+            Long sessionUserId,
+            Long feedId
+    ) {
+        User user = userService.findUserById(sessionUserId);
         Feed feed = feedService.findFeedByFeedId(feedId);
 
-        Comment comment = Comment.builder()
+        Comment savedComment = Comment.builder()
                 .content(dto.getContent())
                 .user(user)
                 .feed(feed)
                 .build();
 
-        commentRepository.save(comment);
-        return comment.getFeed().getId();
+        commentRepository.save(savedComment);
+        return GetCommentResponseDto.of(savedComment);
     }
 
     @Transactional(readOnly = true)
@@ -57,30 +59,50 @@ public class CommentService {
     }
 
     @Transactional
-    public Long updateComment(Long commentId, Long sessionUserId, UpdateCommnetRequestDto dto) {
-        Comment comment = getCommentAfterAuthorization(commentId, sessionUserId);
+    public UpdateCommentResponseDto updateComment(
+            Long commentId,
+            Long sessionUserId,
+            UpdateCommnetRequestDto dto
+    ) {
+        checkUserPermission(commentId, sessionUserId);
+        Comment comment = findCommentByIdOrThrow(commentId);
+
         comment.updateContent(dto.getContent());
-        commentRepository.save(comment);
-        return comment.getFeed().getId();
+
+        return UpdateCommentResponseDto.of(comment);
     }
 
     @Transactional
     public void deleteComment(Long commentId, Long sessionUserId) {
-        Comment comment = getCommentAfterAuthorization(commentId, sessionUserId);
+        checkUserPermission(commentId, sessionUserId);
+        Comment comment = findCommentByIdOrThrow(commentId);
+
         commentRepository.delete(comment);
     }
 
-    private Comment getCommentAfterAuthorization(Long commentId, Long sessionUserId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
-                () -> new CommentNotFoundException(List.of(
-                        new ErrorDetail(COMMENT_NOT_FOUND, null, COMMENT_NOT_FOUND.getMessage())
-                )));
-
-        if (!comment.getUser().getId().equals(sessionUserId)) {
-            throw new UnauthorizedUserException(List.of(
-                    new ErrorDetail(COMMENT_ACCESS_DENIED, null, COMMENT_ACCESS_DENIED.getMessage()))
-            );
+    @Transactional
+    public void deleteCommentsByUserId(Long userId) {
+        if(!commentRepository.findByUserId(userId).isEmpty()) {
+            commentRepository.deleteAll();
         }
-        return comment;
+    }
+
+    // 해당 댓글을 찾을 수 없을 때 예외처리
+    private Comment findCommentByIdOrThrow(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() ->
+                        new CommentNotFoundException(List.of(
+                                new ErrorDetail(COMMENT_NOT_FOUND, null, COMMENT_NOT_FOUND.getMessage())
+                        ))
+                );
+    }
+
+    // 자신이 해당 댓글의 작성자가 아닐 때의 예외처리
+    private void checkUserPermission(Long commentId, Long sessionUserId) {
+        if (!commentRepository.findUserIdByCommentId(commentId).equals(sessionUserId)) {
+            throw new UnauthorizedUserException(List.of(
+                    new ErrorDetail(COMMENT_ACCESS_DENIED, null, COMMENT_ACCESS_DENIED.getMessage())
+            ));
+        }
     }
 }

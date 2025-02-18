@@ -35,7 +35,7 @@ public class Comment extends BaseTimeEntity {
         this.feed = feed;
     }
 
-    public void updateContent(String content){
+    public void updateContent(String content) {
         this.content = content;
     }
 }

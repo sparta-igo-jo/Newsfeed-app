@@ -35,11 +35,11 @@ public class AuthService {
         isUserNameDuplication(dto.getName());
 
         User createUser = authRepository.save(
-                new User(
-                    dto.getEmail(),
-                    passwordEncoder.encode(dto.getPassword()),
-                    dto.getName()
-                )
+                User.builder()
+                        .email(dto.getEmail())
+                        .password(passwordEncoder.encode(dto.getPassword()))
+                        .name(dto.getName())
+                        .build()
         );
 
         return AuthConverter.toSignUpResponse(createUser);
