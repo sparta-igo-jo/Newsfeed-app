@@ -28,10 +28,10 @@ public class CommentController {
     @PostMapping
     public Response<GetCommentResponseDto> createComment(
             @RequestBody CreateCommentRequestDto dto,
-            @SessionAttribute(name = LOGIN_USER) Long userId,
+            @SessionAttribute(name = LOGIN_USER) Long sessionUserId,
             @RequestParam Long feedId
     ) {
-        GetCommentResponseDto feedIdCreatedComment = commentService.createComment(dto, userId, feedId);
+        GetCommentResponseDto feedIdCreatedComment = commentService.createComment(dto, sessionUserId, feedId);
         return Response.of(feedIdCreatedComment, "댓글이 생성되었습니다.");
     }
 
