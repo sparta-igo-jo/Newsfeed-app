@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
-@RestControllerAdvice(basePackages = "com.example.schedule")
+@RestControllerAdvice(basePackages = "com.example.newsfeed")
 public class GlobalControllerAdvice {
 
     @ExceptionHandler(value = BaseException.class)

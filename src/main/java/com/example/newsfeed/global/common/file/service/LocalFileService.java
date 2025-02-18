@@ -3,7 +3,7 @@ package com.example.newsfeed.global.common.file.service;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import com.example.newsfeed.global.common.file.FileType;
 import com.example.newsfeed.global.common.file.exception.FileUploadFailedException;
-import com.example.newsfeed.user.application.service.UserService;
+import com.example.newsfeed.user.application.service.UserReadService;
 import com.example.newsfeed.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,14 +31,13 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequiredArgsConstructor
 public class LocalFileService implements FileService {
 
+    private final UserReadService userReadService;
     @Value("${base.dir}")
     private String baseDir;
 
-    private final UserService userService;
-
     @Override
     public String uploadImage(String type, MultipartFile file, Long sessionUserId) {
-        User getSessionUser = userService.findUserById(sessionUserId);
+        User getSessionUser = userReadService.findUserById(sessionUserId);
 
         // 업로드하는 타입에 따라 하위 폴더명 설정
         FileType fileType = from(type);

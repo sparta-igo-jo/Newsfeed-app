@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.GenerationType.*;
+
 @Getter
 @NoArgsConstructor
 @Entity
@@ -14,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Feed extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -30,7 +32,6 @@ public class Feed extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // TODO: 파일 저장 및 로드는 완성되면 추가해야 함
     @Builder
     public Feed(String title, String contents, User user, String feedImage) {
         this.title = title;

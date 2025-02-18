@@ -2,10 +2,10 @@ package com.example.newsfeed.auth.controller;
 
 import com.example.newsfeed.auth.application.service.AuthService;
 import com.example.newsfeed.auth.dto.request.LoginUserRequestDto;
+import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import com.example.newsfeed.auth.dto.response.LoginUserResponseDto;
 import com.example.newsfeed.auth.dto.response.SignUpUserResponseDto;
 import com.example.newsfeed.global.response.Response;
-import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -30,8 +30,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public Response<LoginUserResponseDto> loginUser(
-            @Valid @RequestBody LoginUserRequestDto dto,
-            HttpServletRequest request
+        @Valid @RequestBody LoginUserRequestDto dto,
+        HttpServletRequest request
     ) {
         LoginUserResponseDto loginUserDto = authService.loginUser(dto);
 
@@ -44,9 +44,7 @@ public class AuthController {
     @PostMapping("/logout")
     public Response<Void> logoutUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-
-        if(session != null) session.invalidate();
-
+        if (session != null) session.invalidate();
         return Response.of(null, "로그아웃 되었습니다.");
     }
 }

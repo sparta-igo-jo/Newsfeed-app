@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static com.example.newsfeed.global.common.constant.PasswordRegexpConst.PASSWORD_REGEXP_CONST;
+import static com.example.newsfeed.global.common.constant.RegexpConst.PASSWORD_REGEXP_CONST;
 
 @Getter
 @RequiredArgsConstructor
