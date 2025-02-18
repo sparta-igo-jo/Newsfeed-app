@@ -38,3 +38,6 @@ out/
 
 ### application config ###
 src/main/resources/local/**
+
+### images ###
+/images/**

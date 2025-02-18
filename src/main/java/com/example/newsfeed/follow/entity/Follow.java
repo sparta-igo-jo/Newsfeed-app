@@ -11,24 +11,29 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Getter
 @Entity
+@Table(
+    name = "follows",
+    uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"}))
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "follows",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id, following_id"}))
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 public class Follow {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "follower_id", referencedColumnName = "user_id", nullable = false)
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "follower_id", referencedColumnName = "id", nullable = false)
     private User follower;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "following_id", referencedColumnName = "user_id", nullable = false)
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "following_id", referencedColumnName = "id", nullable = false)
     private User following;
 
     @CreatedDate

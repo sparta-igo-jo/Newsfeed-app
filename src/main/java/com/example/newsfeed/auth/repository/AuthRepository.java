@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-
 public interface AuthRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);

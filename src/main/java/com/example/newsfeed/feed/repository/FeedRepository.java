@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
-import java.util.List;
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 
@@ -15,6 +14,5 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     Page<Feed> findByUser(User user, Pageable pageable);
 
-    List<Feed> findFeedByUser_id(Long userId);
-
+    void deleteByUserId(Long userId);
 }
