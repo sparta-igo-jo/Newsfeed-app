@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "follows")
+@Table(name = "follows",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id, following_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow {
 

@@ -1,9 +1,8 @@
 package com.example.newsfeed.follow.controller;
 
-import com.example.newsfeed.global.common.Const.SessionConst;
-import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.follow.application.service.FollowService;
-import jakarta.servlet.http.HttpSession;
+import com.example.newsfeed.global.common.constant.SessionConst;
+import com.example.newsfeed.global.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
