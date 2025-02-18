@@ -23,11 +23,12 @@ public enum ErrorCode {
 
     // 피드 관련 예외 코드
     FEED_NOT_FOUND("해당 피드를 찾을 수 없습니다.", NOT_FOUND),
-    NO_PERMISSION_AT_UPDATE_FEED("해당 피드의 작성자만 수정할 수 있습니다.", FORBIDDEN),
+    FEED_ACCESS_DENIED("피드에 접근할 권한이 없습니다.", FORBIDDEN),
 
 
     // 댓글 관련 예외 코드
-
+    COMMENT_NOT_FOUND("해당 댓글을 찾을 수 없습니다.", NOT_FOUND),
+    COMMENT_ACCESS_DENIED("댓글에 접근할 권한이 없습니다.", FORBIDDEN),
 
     // 파일 관련 예외 코드
     UPLOAD_FAILED("파일 업로드에 실패했습니다.", INTERNAL_SERVER_ERROR),

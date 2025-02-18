@@ -99,7 +99,7 @@ public class FeedService {
         Feed findFeed = findFeedByFeedId(feedId);
         if (!findFeed.getUser().equals(findUser)) {
             throw new FeedUpdateFailedException(List.of(
-                    new ErrorDetail(NO_PERMISSION_AT_UPDATE_FEED, null, NO_PERMISSION_AT_UPDATE_FEED.getMessage())
+                    new ErrorDetail(FEED_ACCESS_DENIED, null, FEED_ACCESS_DENIED.getMessage())
             ));
         }
         return findFeed;

@@ -2,6 +2,7 @@ package com.example.newsfeed.comment.controller;
 
 import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.comment.dto.request.CreateCommentRequestDto;
+import com.example.newsfeed.comment.dto.request.UpdateCommnetRequestDto;
 import com.example.newsfeed.comment.dto.response.GetCommentResponseDto;
 import com.example.newsfeed.global.common.constant.SessionConst;
 import com.example.newsfeed.global.response.Response;
@@ -31,15 +32,6 @@ public class CommentController {
         return Response.of(feedIdCreatedComment, "댓글이 생성되었습니다.");
     }
 
-    @DeleteMapping("/{commentId}")
-    public Response<Void> deleteComment(
-            @PathVariable Long commentId,
-            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
-    ) {
-        commentService.deleteComment(commentId, sessionUserId);
-        return Response.empty("댓글이 삭제되었습니다.");
-    }
-
     @GetMapping("/feeds/{feedId}")
     public Response<Page<GetCommentResponseDto>> getCommentsByFeed(
             @PathVariable Long feedId,
@@ -47,5 +39,24 @@ public class CommentController {
     ) {
         Page<GetCommentResponseDto> comments = commentService.findCommentsByFeedId(feedId, pageable);
         return Response.of(comments, "댓글이 조회되었습니다.");
+    }
+
+    @PatchMapping("/{commentId}")
+    public Response<Long> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody UpdateCommnetRequestDto dto,
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
+    ) {
+        Long feedIdCreatedComment = commentService.updateComment(commentId, sessionUserId, dto);
+        return Response.of(feedIdCreatedComment, "댓글이 삭제되었습니다.");
+    }
+
+    @DeleteMapping("/{commentId}")
+    public Response<Void> deleteComment(
+            @PathVariable Long commentId,
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
+    ) {
+        commentService.deleteComment(commentId, sessionUserId);
+        return Response.empty("댓글이 삭제되었습니다.");
     }
 }
