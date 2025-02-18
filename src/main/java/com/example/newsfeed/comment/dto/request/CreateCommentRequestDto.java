@@ -11,7 +11,4 @@ public class CreateCommentRequestDto {
 
     @NotBlank
     private final String content;
-
-    @NotNull
-    private final Long sessionUserId;
 }
