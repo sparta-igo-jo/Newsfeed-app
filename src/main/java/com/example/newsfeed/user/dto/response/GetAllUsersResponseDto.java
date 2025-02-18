@@ -1,5 +1,6 @@
 package com.example.newsfeed.user.dto.response;
 
+import com.example.newsfeed.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,12 +16,12 @@ public class GetAllUsersResponseDto {
 
     private final String description;
 
-    public static GetAllUsersResponseDto of(
-        Long userId,
-        String name,
-        String profileImage,
-        String description
-    ) {
-        return new GetAllUsersResponseDto(userId, name, profileImage, description);
+    public static GetAllUsersResponseDto of(User user) {
+        return new GetAllUsersResponseDto(
+            user.getId(),
+            user.getName(),
+            user.getProfileImage(),
+            user.getDescription()
+        );
     }
 }

@@ -14,7 +14,7 @@ import com.example.newsfeed.user.application.service.UserService;
 import com.example.newsfeed.follow.application.service.FollowService;
 import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.user.entity.User;
-import com.example.newsfeed.user.entity.Comment;
+import com.example.newsfeed.comment.entity.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,19 +48,15 @@ public class FeedService {
     }
 
     @Transactional(readOnly = true)
-    public GetFeedResponseDto getFeed(Long feedId, Pageable pageable) {
+    public GetFeedResponseDto getFeed(Long feedId) {
         Feed findFeed = findFeedByFeedId(feedId);
-
-        //TODO:CommentService 에서 findCommentsByFeedId 매서드 생성 필요
-        Page<Comment> comments = commentService.findCommentsByFeedId(feedId, pageable);
-        return FeedConverter.toResponse(findFeed, comments);
+        return FeedConverter.toResponse(findFeed);
     }
 
      //나와 내가 팔로우한 사람들의 피드 목록 조회
     @Transactional(readOnly = true)
     public Page<GetAllFeedsResponseDto> getMyFeedsWithFollowing(Long sessionUserId, Pageable pageable) {
 
-        //TODO:FollowService 에서 findFollowingIdsByUserId 매서드 생성 필요
         List<Long> followingIds = followService.findFollowingIdsByUserId(sessionUserId);
         followingIds.add(sessionUserId);
         Page<Feed> feeds = feedRepository.findByUserIdIn(followingIds, pageable);
@@ -103,7 +99,7 @@ public class FeedService {
         Feed findFeed = findFeedByFeedId(feedId);
         if (!findFeed.getUser().equals(findUser)) {
             throw new FeedUpdateFailedException(List.of(
-                    new ErrorDetail(NO_PERMISSION_AT_UPDATE_FEED, null, NO_PERMISSION_AT_UPDATE_FEED.getMessage())
+                    new ErrorDetail(FEED_ACCESS_DENIED, null, FEED_ACCESS_DENIED.getMessage())
             ));
         }
         return findFeed;

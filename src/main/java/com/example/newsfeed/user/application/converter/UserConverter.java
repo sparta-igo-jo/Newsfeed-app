@@ -3,8 +3,7 @@ package com.example.newsfeed.user.application.converter;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import com.example.newsfeed.user.entity.User;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public class UserConverter {
 
@@ -12,24 +11,10 @@ public class UserConverter {
     }
 
     public static GetUserResponseDto toResponse(User user) {
-        return GetUserResponseDto.of(
-            user.getId(),
-            user.getName(),
-            user.getProfileImage(),
-            user.getDescription(),
-            user.getFollowersCount(),
-            user.getFollowingsCount()
-        );
+        return GetUserResponseDto.of(user);
     }
 
-    public static List<GetAllUsersResponseDto> toResponse(List<User> users) {
-        return users.stream()
-            .map(user -> GetAllUsersResponseDto.of(
-                user.getId(),
-                user.getName(),
-                user.getProfileImage(),
-                user.getDescription()
-            ))
-            .toList();
+    public static Page<GetAllUsersResponseDto> toResponse(Page<User> users) {
+        return users.map(GetAllUsersResponseDto::of);
     }
 }
