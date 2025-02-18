@@ -1,6 +1,6 @@
 package com.example.newsfeed.like.controller;
 
-import com.example.newsfeed.global.common.Const.SessionConst;
+import com.example.newsfeed.global.common.constant.SessionConst;
 import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.like.application.service.LikeService;
 import com.example.newsfeed.like.dto.LikeResponseDto;
