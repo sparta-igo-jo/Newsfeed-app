@@ -5,15 +5,15 @@ import com.example.newsfeed.feed.dto.request.CreateFeedRequestDto;
 import com.example.newsfeed.feed.dto.request.UpdateFeedRequestDto;
 import com.example.newsfeed.feed.dto.response.GetAllFeedsResponseDto;
 import com.example.newsfeed.feed.dto.response.GetFeedResponseDto;
+import com.example.newsfeed.global.common.constant.SessionConst;
 import com.example.newsfeed.global.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
-
-import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
 
 @RestController
 @RequestMapping("/feeds")
@@ -25,7 +25,7 @@ public class FeedController {
     @PostMapping
     public Response<Long> createFeed(
             @RequestBody CreateFeedRequestDto dto,
-            @SessionAttribute(name = LOGIN_USER) Long sessionUserId
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
     ) {
         Long createdFeedId = feedService.createFeed(sessionUserId, dto);
         return Response.of(createdFeedId, "피드가 생성되었습니다.");
@@ -44,7 +44,7 @@ public class FeedController {
     @GetMapping
     public Response<Page<GetAllFeedsResponseDto>> getMyFeedsWithFollowing(
             @SortDefault(sort = "updateAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @SessionAttribute(name = LOGIN_USER) Long sessionUserId
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
     ) {
         Page<GetAllFeedsResponseDto> myFeeds = feedService.getMyFeedsWithFollowing(sessionUserId, pageable);
         return Response.of(myFeeds, "피드가 조회되었습니다.");
@@ -64,7 +64,7 @@ public class FeedController {
     public Response<Long> updateFeed(
             @PathVariable Long feedId,
             @RequestBody UpdateFeedRequestDto dto,
-            @SessionAttribute(name = LOGIN_USER) Long sessionUserId
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
     ) {
         Long updatedFeedId = feedService.updateFeed(sessionUserId, feedId, dto);
         return Response.of(updatedFeedId, "피드가 수정되었습니다.");
@@ -73,7 +73,7 @@ public class FeedController {
     @DeleteMapping("/{feedId}")
     public Response<Void> deleteFeed(
             @PathVariable Long feedId,
-            @SessionAttribute(name = LOGIN_USER) Long sessionUserId
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
     ) {
         feedService.deleteFeed(sessionUserId, feedId);
         return Response.empty("피드가 삭제되었습니다.");
