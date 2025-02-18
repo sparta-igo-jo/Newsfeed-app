@@ -17,6 +17,6 @@ public class FeedConverter {
     }
 
     public static Page<GetAllFeedsResponseDto> toResponse(Page<Feed> feeds) {
-        return feeds.map(feed -> GetAllFeedsResponseDto.of(feeds));
+        return feeds.map(GetAllFeedsResponseDto::of);
     }
 }

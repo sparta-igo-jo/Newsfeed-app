@@ -12,9 +12,7 @@ import com.example.newsfeed.feed.repository.FeedRepository;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import com.example.newsfeed.user.application.service.UserService;
 import com.example.newsfeed.follow.application.service.FollowService;
-import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.user.entity.User;
-import com.example.newsfeed.comment.entity.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,16 +30,15 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final UserService userService;
     private final FollowService followService;
-    private final CommentService commentService;
 
     @Transactional
     public Long createFeed(Long sessionUserId, CreateFeedRequestDto dto) {
         User findUser = userService.findUserById(sessionUserId);
-        //TODO: 파일 저장 및 로드는 완성되면 추가해야 함
         Feed createFeed = Feed.builder()
                 .title(dto.getTile())
                 .contents(dto.getContents())
                 .user(findUser)
+                .feedImage(dto.getFeedImage())
                 .build();
         feedRepository.save(createFeed);
         return createFeed.getId();
@@ -56,7 +53,6 @@ public class FeedService {
      //나와 내가 팔로우한 사람들의 피드 목록 조회
     @Transactional(readOnly = true)
     public Page<GetAllFeedsResponseDto> getMyFeedsWithFollowing(Long sessionUserId, Pageable pageable) {
-
         List<Long> followingIds = followService.findFollowingIdsByUserId(sessionUserId);
         followingIds.add(sessionUserId);
         Page<Feed> feeds = feedRepository.findByUserIdIn(followingIds, pageable);
@@ -73,36 +69,36 @@ public class FeedService {
 
     @Transactional
     public Long updateFeed(Long sessionUserId, Long feedId, UpdateFeedRequestDto dto) {
-        Feed findFeed = getFeedAfterAuthorization(sessionUserId, feedId);
-
-        //TODO: 파일 저장 및 로드는 완성되면 추가해야 함
+        checkPermission(sessionUserId, feedId);
+        Feed findFeed = findFeedByFeedId(feedId);
         if (findFeed.getTitle().equals(dto.getTile())
                 && findFeed.getContents().equals(dto.getContents())
+                && findFeed.getFeedImage().equals(dto.getFeedImage())
         ) {
             return findFeed.getId();
         }
 
         findFeed.updateTitle(dto.getTile());
         findFeed.updateContents(dto.getContents());
+        findFeed.updateFeedImage(dto.getFeedImage());
 
         return findFeed.getId();
     }
 
     @Transactional
     public void deleteFeed(Long sessionUserId, Long feedId) {
-        Feed findFeed = getFeedAfterAuthorization(sessionUserId, feedId);
+        checkPermission(sessionUserId, feedId);
+        Feed findFeed = findFeedByFeedId(feedId);
         feedRepository.delete(findFeed);
     }
 
-    private Feed getFeedAfterAuthorization(Long sessionUserId, Long feedId) {
-        User findUser = userService.findUserById(sessionUserId);
-        Feed findFeed = findFeedByFeedId(feedId);
-        if (!findFeed.getUser().equals(findUser)) {
+    private void checkPermission(Long sessionUserId, Long feedId) {
+        Long userId = findFeedByFeedId(feedId).getUser().getId();
+        if (!userId.equals(sessionUserId)) {
             throw new FeedUpdateFailedException(List.of(
                     new ErrorDetail(FEED_ACCESS_DENIED, null, FEED_ACCESS_DENIED.getMessage())
             ));
         }
-        return findFeed;
     }
 
     public Feed findFeedByFeedId(Long feedId) {
@@ -110,5 +106,10 @@ public class FeedService {
             .orElseThrow(() -> new FeedNotFoundException(List.of(
                     new ErrorDetail(FEED_NOT_FOUND, null, FEED_NOT_FOUND.getMessage())
                 )));
+    }
+
+    public void deleteFeedsByUserId(Long userId) {
+        List<Feed> feeds = feedRepository.findFeedByUser_id(userId);
+        feedRepository.deleteAll(feeds);
     }
 }
