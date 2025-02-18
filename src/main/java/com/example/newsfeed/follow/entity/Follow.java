@@ -1,4 +1,4 @@
-package com.example.newsfeed.like.entity;
+package com.example.newsfeed.follow.entity;
 
 import com.example.newsfeed.user.entity.User;
 import jakarta.persistence.*;

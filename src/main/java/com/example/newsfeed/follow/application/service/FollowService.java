@@ -1,9 +1,9 @@
-package com.example.newsfeed.like.application.service;
+package com.example.newsfeed.follow.application.service;
 
 import com.example.newsfeed.global.common.exception.ErrorDetail;
-import com.example.newsfeed.like.entity.Follow;
-import com.example.newsfeed.like.exception.CannotFollowSelfException;
-import com.example.newsfeed.like.repository.FollowRepository;
+import com.example.newsfeed.follow.entity.Follow;
+import com.example.newsfeed.follow.exception.CannotFollowSelfException;
+import com.example.newsfeed.follow.repository.FollowRepository;
 import com.example.newsfeed.user.application.service.UserService;
 import com.example.newsfeed.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +22,15 @@ public class FollowService {
     private final UserService userService;
     
     @Transactional
-    public boolean toggleFollow(Long userId, Long targetUserId) {
+    public boolean toggleFollow(Long sessionUserId, Long targetUserId) {
 
-        if(userId.equals(targetUserId)) { // 자기 자신을 팔로우 시도 하면 발생 -> 현재 500번 에러 발생
+        if(sessionUserId.equals(targetUserId)) { // 자기 자신을 팔로우 시도 하면 발생 -> 현재 500번 에러 발생
             throw new CannotFollowSelfException(List.of(
                   new ErrorDetail(CANNOT_FOLLOW_SELF,null, CANNOT_FOLLOW_SELF.getMessage())
             ));
         }
 
-        User follower = userService.findUserById(userId);
+        User follower = userService.findUserById(sessionUserId);
         User following = userService.findUserById(targetUserId);
 
         return followRepository.findByFollowerAndFollowing(follower, following)
@@ -54,12 +54,12 @@ public class FollowService {
     }
     // 특정 사용자가 팔로우한 ID 목록 조회
     @Transactional(readOnly = true)
-    public List<Long> getFollowingUsers(Long userId) {
+    public List<Long> findFollowingIdsByUserId(Long userId) {
         return followRepository.findFollowingIdsByUserId(userId);
     }
     // 특정 사용자를 팔로잉한 ID 목록 조회
     @Transactional(readOnly = true)
-    public List<Long> getFollowerUsers(Long userId) {
+    public List<Long> findFollowerIdsByUserId(Long userId) {
         return followRepository.findFollowerIdsByUserId(userId);
     }
 }

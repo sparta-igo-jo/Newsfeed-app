@@ -12,6 +12,7 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
 
+
     // 유저 관련 예외 코드
     USER_EMAIL_DUPLICATION("다른 유저와 이메일이 중복됩니다.", CONFLICT),
     USER_NAME_DUPLICATION("다른 유저와 이름이 중복됩니다.", CONFLICT),
@@ -45,6 +46,7 @@ public enum ErrorCode {
 
     // 서버 문제로 인한 예외
     SERVER_NOT_WORK("서버 문제로 인해 실패했습니다.", INTERNAL_SERVER_ERROR);
+
 
 
     private final String message;
