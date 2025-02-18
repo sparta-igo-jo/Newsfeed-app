@@ -12,16 +12,19 @@ import java.time.LocalDateTime;
 public class GetCommentResponseDto {
 
     private final Long id;
-    private final String content;
-    private final LocalDateTime updatedDate;
     private final String username;
+    private final String content;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+
 
     public static GetCommentResponseDto of(Comment comment) {
         return new GetCommentResponseDto(
                 comment.getId(),
                 comment.getContent(),
+                comment.getUser().getName(),
                 comment.getCreatedAt(),
-                comment.getUser().getName()
+                comment.getUpdatedAt()
         );
     }
 }

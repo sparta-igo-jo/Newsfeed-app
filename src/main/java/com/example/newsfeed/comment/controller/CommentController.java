@@ -4,6 +4,7 @@ import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.comment.dto.request.CreateCommentRequestDto;
 import com.example.newsfeed.comment.dto.request.UpdateCommnetRequestDto;
 import com.example.newsfeed.comment.dto.response.GetCommentResponseDto;
+import com.example.newsfeed.comment.dto.response.UpdateCommentResponseDto;
 import com.example.newsfeed.global.common.constant.SessionConst;
 import com.example.newsfeed.global.response.Response;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +24,12 @@ public class CommentController {
 
 
     @PostMapping
-    public Response<Long> createComment(
+    public Response<GetCommentResponseDto> createComment(
             @RequestBody CreateCommentRequestDto dto,
             @SessionAttribute(name = SessionConst.LOGIN_USER) Long userId,
             @RequestParam Long feedId
     ) {
-        Long feedIdCreatedComment = commentService.createComment(dto, userId, feedId);
+        GetCommentResponseDto feedIdCreatedComment = commentService.createComment(dto, userId, feedId);
         return Response.of(feedIdCreatedComment, "댓글이 생성되었습니다.");
     }
 
@@ -42,13 +43,13 @@ public class CommentController {
     }
 
     @PatchMapping("/{commentId}")
-    public Response<Long> updateComment(
+    public Response<UpdateCommentResponseDto> updateComment(
             @PathVariable Long commentId,
             @RequestBody UpdateCommnetRequestDto dto,
             @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
     ) {
-        Long feedIdCreatedComment = commentService.updateComment(commentId, sessionUserId, dto);
-        return Response.of(feedIdCreatedComment, "댓글이 삭제되었습니다.");
+        UpdateCommentResponseDto feedIdUpdatedComment = commentService.updateComment(commentId, sessionUserId, dto);
+        return Response.of(feedIdUpdatedComment, "댓글이 수정되었습니다.");
     }
 
     @DeleteMapping("/{commentId}")

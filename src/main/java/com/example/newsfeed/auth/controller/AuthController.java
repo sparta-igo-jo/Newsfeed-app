@@ -23,7 +23,7 @@ public class AuthController {
     @PostMapping("/signup")
     public Response<SignUpUserResponseDto> signUpUser(@Valid @RequestBody SignUpUserRequestDto dto) {
         SignUpUserResponseDto createUserDto = authService.signUpUser(dto);
-        return Response.of(createUserDto);
+        return Response.of(createUserDto, "회원가입 되었습니다.");
     }
 
     @PostMapping("/login")
@@ -36,15 +36,15 @@ public class AuthController {
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_USER, loginUserDto.getId());
 
-        return Response.of(loginUserDto);
+        return Response.of(loginUserDto, "로그인 되었습니다.");
     }
 
     @PostMapping("/logout")
-    public Response<String> logoutUser(HttpServletRequest request) {
+    public Response<Void> logoutUser(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
 
         if(session != null) session.invalidate();
 
-        return Response.of("로그아웃 성공!");
+        return Response.of(null, "로그아웃 되었습니다.");
     }
 }
