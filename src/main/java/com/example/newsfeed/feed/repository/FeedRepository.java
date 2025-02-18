@@ -15,6 +15,6 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     Page<Feed> findByUser(User user, Pageable pageable);
 
-    List<Feed> findFeedByUser_Id(Long userId);
+    List<Feed> findFeedByUser_id(Long userId);
 
 }

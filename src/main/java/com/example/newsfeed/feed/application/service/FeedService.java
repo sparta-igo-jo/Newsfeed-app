@@ -109,7 +109,7 @@ public class FeedService {
     }
 
     public void deleteFeedsByUserId(Long userId) {
-        List<Feed> feeds = feedRepository.findFeedByUser_Id(userId);
+        List<Feed> feeds = feedRepository.findFeedByUser_id(userId);
         feedRepository.deleteAll(feeds);
     }
 }
