@@ -38,4 +38,9 @@ public class LikeService {
                     return new LikeResponseDto(feedId, true, feed.getLikeCount());
                 });
     }
+
+   @Transactional
+   void decreaseLikesOfFeeds(Long sessionUserId){
+        likeRepository.decreaseLikesOfFeeds(sessionUserId);
+   }
 }
