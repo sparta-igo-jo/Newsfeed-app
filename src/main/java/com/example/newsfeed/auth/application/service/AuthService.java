@@ -2,18 +2,16 @@ package com.example.newsfeed.auth.application.service;
 
 import com.example.newsfeed.auth.application.converter.AuthConverter;
 import com.example.newsfeed.auth.dto.request.LoginUserRequestDto;
+import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import com.example.newsfeed.auth.dto.response.LoginUserResponseDto;
 import com.example.newsfeed.auth.dto.response.SignUpUserResponseDto;
 import com.example.newsfeed.auth.exception.UserEmailDuplicationExcepion;
 import com.example.newsfeed.auth.exception.UserNameDuplicationException;
 import com.example.newsfeed.auth.repository.AuthRepository;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
-import com.example.newsfeed.auth.dto.request.SignUpUserRequestDto;
 import com.example.newsfeed.user.entity.User;
 import com.example.newsfeed.user.exception.InvalidPasswordException;
 import com.example.newsfeed.user.exception.UserNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.example.newsfeed.global.common.constant.ImageUrlConst.DEFAULT_PROFILE_IMAGE_PATH;
 import static com.example.newsfeed.global.common.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
@@ -35,11 +34,12 @@ public class AuthService {
         isUserNameDuplication(dto.getName());
 
         User createUser = authRepository.save(
-                User.builder()
-                        .email(dto.getEmail())
-                        .password(passwordEncoder.encode(dto.getPassword()))
-                        .name(dto.getName())
-                        .build()
+            User.builder()
+                .email(dto.getEmail())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .name(dto.getName())
+                .profileImage(DEFAULT_PROFILE_IMAGE_PATH)
+                .build()
         );
 
         return AuthConverter.toSignUpResponse(createUser);
@@ -47,18 +47,18 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginUserResponseDto loginUser(LoginUserRequestDto dto) {
-        User findUser = authRepository.findByEmail(dto.getEmail())
-                .orElseThrow(() ->
-                        new UserNotFoundException(List.of(
-                                new ErrorDetail(
-                                        USER_NOT_FOUND, null, USER_NOT_FOUND.getMessage()
-                                )
-                        ))
-                );
+        User findUser = authRepository.findUserByEmailAndDeletedAtIsNull(dto.getEmail())
+            .orElseThrow(() ->
+                new UserNotFoundException(List.of(
+                    new ErrorDetail(
+                        USER_NOT_FOUND, null, USER_NOT_FOUND.getMessage()
+                    )
+                ))
+            );
 
-        if(!passwordEncoder.matches(dto.getPassword(), findUser.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), findUser.getPassword())) {
             throw new InvalidPasswordException(List.of(
-                    new ErrorDetail(INVALID_PASSWORD, null, INVALID_PASSWORD.getMessage())
+                new ErrorDetail(INVALID_PASSWORD, null, INVALID_PASSWORD.getMessage())
             ));
         }
 
@@ -67,22 +67,22 @@ public class AuthService {
 
     // 유저 이메일 중복 검사 메서드
     private void isUserEmailDuplication(String email) {
-        if(authRepository.existsByEmail(email)) {
+        if (authRepository.existsByEmail(email)) {
             throw new UserEmailDuplicationExcepion(List.of(
-                    new ErrorDetail(
-                            USER_EMAIL_DUPLICATION, "email", USER_EMAIL_DUPLICATION.getMessage()
-                    )
+                new ErrorDetail(
+                    USER_EMAIL_DUPLICATION, "email", USER_EMAIL_DUPLICATION.getMessage()
+                )
             ));
         }
     }
 
     // 유저 이름 중복 검사 메서드
     private void isUserNameDuplication(String name) {
-        if(authRepository.existsByName(name)) {
+        if (authRepository.existsByName(name)) {
             throw new UserNameDuplicationException(List.of(
-               new ErrorDetail(
-                       USER_NAME_DUPLICATION, "name", USER_NAME_DUPLICATION.getMessage()
-               )
+                new ErrorDetail(
+                    USER_NAME_DUPLICATION, "name", USER_NAME_DUPLICATION.getMessage()
+                )
             ));
         }
     }

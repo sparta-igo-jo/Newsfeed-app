@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
 
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping("/signup")
