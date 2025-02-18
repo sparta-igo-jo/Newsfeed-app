@@ -42,4 +42,16 @@ public class Feed extends BaseTimeEntity {
     public void updateTitle(String title) { this.title = title; }
     public void updateContents(String contents) { this.contents = contents; }
     public void updateFeedImage(String feedImage) { this.feedImage = feedImage; }
+
+    // 좋아요 개수 증가
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    // 좋아요 개수 감소
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
+    }
 }
