@@ -8,4 +8,5 @@ import lombok.Getter;
 public class LikeResponseDto {
     private Long feedId;
     private boolean liked;
+    private Long likeCount;
 }

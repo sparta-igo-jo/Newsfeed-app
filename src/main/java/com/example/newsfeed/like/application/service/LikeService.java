@@ -24,16 +24,18 @@ public class LikeService {
         User user = userService.findUserById(sessionUserId);
         return likeRepository.findByUserAndFeed(user, feed)
                 .map(existringLike -> {
+                    feed.decreaseLikeCount();
                     likeRepository.delete(existringLike);
-                    return new LikeResponseDto(feedId, false);
+                    return new LikeResponseDto(feedId, false, feed.getLikeCount());
                 })
                 .orElseGet(() -> {
                     Like like = Like.builder()
                             .user(user)
                             .feed(feed)
                             .build();
+                    feed.increaseLikeCount();
                     likeRepository.save(like);
-                    return new LikeResponseDto(feedId, true);
+                    return new LikeResponseDto(feedId, true, feed.getLikeCount());
                 });
     }
 }
