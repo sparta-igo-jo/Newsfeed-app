@@ -34,8 +34,12 @@ public class CommentService {
 
 
     @Transactional
-    public GetCommentResponseDto createComment(CreateCommentRequestDto dto, Long userId, Long feedId) {
-        User user = userService.findUserById(userId);
+    public GetCommentResponseDto createComment(
+            CreateCommentRequestDto dto,
+            Long sessionUserId,
+            Long feedId
+    ) {
+        User user = userService.findUserById(sessionUserId);
         Feed feed = feedService.findFeedByFeedId(feedId);
 
         Comment savedComment = Comment.builder()
@@ -61,7 +65,7 @@ public class CommentService {
             UpdateCommnetRequestDto dto
     ) {
         checkUserPermission(commentId, sessionUserId);
-        Comment comment = findCommentById(commentId);
+        Comment comment = findCommentByIdOrElseThrow(commentId);
 
         comment.updateContent(dto.getContent());
 
@@ -71,7 +75,7 @@ public class CommentService {
     @Transactional
     public void deleteComment(Long commentId, Long sessionUserId) {
         checkUserPermission(commentId, sessionUserId);
-        Comment comment = findCommentById(commentId);
+        Comment comment = findCommentByIdOrElseThrow(commentId);
 
         commentRepository.delete(comment);
     }
@@ -84,7 +88,7 @@ public class CommentService {
     }
 
     // 해당 댓글을 찾을 수 없을 때 예외처리
-    private Comment findCommentById(Long commentId) {
+    private Comment findCommentByIdOrElseThrow(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() ->
                         new CommentNotFoundException(List.of(

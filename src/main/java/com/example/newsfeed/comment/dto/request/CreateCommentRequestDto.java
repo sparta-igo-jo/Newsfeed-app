@@ -14,7 +14,4 @@ public class CreateCommentRequestDto {
 
     @NotNull
     private final Long sessionUserId;
-
-    @NotNull
-    private final Long feedId;
 }
