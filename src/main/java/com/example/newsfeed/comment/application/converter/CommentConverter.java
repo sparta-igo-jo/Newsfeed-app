@@ -8,18 +8,7 @@ public class CommentConverter {
     /**
      * Comment 엔티티를 GetCommentResponseDto 로 변환
      */
-    public static GetCommentResponseDto toDto(Comment comment) {
-        if (comment == null) {
-            return null;
-        }
-
-        return GetCommentResponseDto.of(
-                comment.getId(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getUpdatedAt(),
-                comment.getUser() != null ? comment.getUser().getName() : "알수 없음",
-                comment.getFeed() != null ? comment.getFeed().getId() : null
-        );
+    public static GetCommentResponseDto toResponse(Comment comment) {
+        return GetCommentResponseDto.of(comment);
     }
 }

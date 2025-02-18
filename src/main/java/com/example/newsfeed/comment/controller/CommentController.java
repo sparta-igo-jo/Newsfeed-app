@@ -2,14 +2,15 @@ package com.example.newsfeed.comment.controller;
 
 import com.example.newsfeed.comment.application.service.CommentService;
 import com.example.newsfeed.comment.dto.request.CreateCommentRequestDto;
+import com.example.newsfeed.comment.dto.request.UpdateCommnetRequestDto;
 import com.example.newsfeed.comment.dto.response.GetCommentResponseDto;
-import com.example.newsfeed.comment.dto.response.GetCommentResponseWrapperDto;
-import com.example.newsfeed.global.common.Const.SessionConst;
+import com.example.newsfeed.global.common.constant.SessionConst;
 import com.example.newsfeed.global.response.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.SortDefault;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,35 +21,42 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    /**
-     * 댓글 생성
-     */
+
     @PostMapping
-    public ResponseEntity<String> createComment(
-            @RequestBody CreateCommentRequestDto requestDto,
+    public Response<Long> createComment(
+            @RequestBody CreateCommentRequestDto dto,
             @SessionAttribute(name = SessionConst.LOGIN_USER) Long userId,
             @RequestParam Long feedId
     ) {
-        commentService.createComment(requestDto, userId, feedId);
-        return ResponseEntity.ok("댓글이 등록되었습니다.");
+        Long feedIdCreatedComment = commentService.createComment(dto, userId, feedId);
+        return Response.of(feedIdCreatedComment, "댓글이 생성되었습니다.");
     }
 
-    /**
-     * 댓글 삭제
-     */
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @SessionAttribute(name = SessionConst.LOGIN_USER) Long userId) {
-        commentService.deleteComment(commentId, userId);
-        return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * 특정 피드의 댓글 조회 (페이징 처리)
-     */
     @GetMapping("/feeds/{feedId}")
-    public ResponseEntity<GetCommentResponseWrapperDto<Page<GetCommentResponseDto>>> getCommentsByFeed(
-            @PathVariable Long feedId, Pageable pageable) {
+    public Response<Page<GetCommentResponseDto>> getCommentsByFeed(
+            @PathVariable Long feedId,
+            @SortDefault(sort = "updateAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
         Page<GetCommentResponseDto> comments = commentService.findCommentsByFeedId(feedId, pageable);
-        return ResponseEntity.ok(GetCommentResponseWrapperDto.of(comments));
+        return Response.of(comments, "댓글이 조회되었습니다.");
+    }
+
+    @PatchMapping("/{commentId}")
+    public Response<Long> updateComment(
+            @PathVariable Long commentId,
+            @RequestBody UpdateCommnetRequestDto dto,
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
+    ) {
+        Long feedIdCreatedComment = commentService.updateComment(commentId, sessionUserId, dto);
+        return Response.of(feedIdCreatedComment, "댓글이 삭제되었습니다.");
+    }
+
+    @DeleteMapping("/{commentId}")
+    public Response<Void> deleteComment(
+            @PathVariable Long commentId,
+            @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
+    ) {
+        commentService.deleteComment(commentId, sessionUserId);
+        return Response.empty("댓글이 삭제되었습니다.");
     }
 }

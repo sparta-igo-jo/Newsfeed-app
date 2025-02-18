@@ -1,5 +1,6 @@
 package com.example.newsfeed.feed.dto.response;
 
+import com.example.newsfeed.feed.entity.Feed;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,14 +24,14 @@ public class GetAllFeedsResponseDto {
 
     private final LocalDateTime updatedAt;
 
-    public static GetAllFeedsResponseDto of(
-            Long feedId,
-            String title,
-            String contents,
-            String feedImage,
-            Long likeCount,
-            LocalDateTime updatedAt
-    ) {
-        return new GetAllFeedsResponseDto(feedId, title, contents, feedImage, likeCount, updatedAt);
+    public static GetAllFeedsResponseDto of(Feed feed) {
+        return new GetAllFeedsResponseDto(
+                feed.getId(),
+                feed.getTitle(),
+                feed.getContents(),
+                feed.getFeedImage(),
+                feed.getLikeCount(),
+                feed.getUpdatedAt()
+        );
     }
 }

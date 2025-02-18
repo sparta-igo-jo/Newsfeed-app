@@ -12,26 +12,11 @@ public class FeedConverter {
     private FeedConverter(){
     }
 
-    public static GetFeedResponseDto toResponse(Feed feed, Page<Comment> comments) {
-        return GetFeedResponseDto.of(
-                feed.getId(),
-                feed.getTitle(),
-                feed.getContents(),
-                feed.getFeedImage(),
-                feed.getLikeCount(),
-                feed.getUpdatedAt(),
-                comments
-        );
+    public static GetFeedResponseDto toResponse(Feed feed) {
+        return GetFeedResponseDto.of(feed);
     }
 
     public static Page<GetAllFeedsResponseDto> toResponse(Page<Feed> feeds) {
-        return feeds.map(feed -> GetAllFeedsResponseDto.of(
-                feed.getId(),
-                feed.getTitle(),
-                feed.getContents(),
-                feed.getFeedImage(),
-                feed.getLikeCount(),
-                feed.getUpdatedAt()
-            ));
+        return feeds.map(feed -> GetAllFeedsResponseDto.of(feeds));
     }
 }
