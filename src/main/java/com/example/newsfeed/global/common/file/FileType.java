@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum FileType {
 
     PROFILE("profile"),
-    FEEDS("feeds");
+    FEEDS("feeds"),
+    DEFAULT("default");
 
     private final String type;
 }

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -21,7 +20,7 @@ public class UpdateUserRequestDto {
 
     @Nullable
     @JsonInclude(NON_NULL)
-    private final MultipartFile profileImage;
+    private final String imagePath;
 
     @Nullable
     @JsonInclude(NON_NULL)

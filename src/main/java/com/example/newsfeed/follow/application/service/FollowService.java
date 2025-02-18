@@ -52,14 +52,26 @@ public class FollowService {
                     return true; // 팔로우 처리
                 });
     }
+
     // 특정 사용자가 팔로우한 ID 목록 조회
     @Transactional(readOnly = true)
     public List<Long> findFollowingIdsByUserId(Long userId) {
         return followRepository.findFollowingIdsByUserId(userId);
     }
+
     // 특정 사용자를 팔로잉한 ID 목록 조회
     @Transactional(readOnly = true)
     public List<Long> findFollowerIdsByUserId(Long userId) {
         return followRepository.findFollowerIdsByUserId(userId);
+    }
+
+    @Transactional
+    public void decreaseFollowersOfFollowedUsers(Long sessionUserId) {
+        followRepository.decreaseFollowersOfFollowedUsers(sessionUserId);
+    }
+
+    @Transactional
+    public void decreaseFollowingsOfFollowers(Long sessionUserId) {
+        followRepository.decreaseFollowingsOfFollowers(sessionUserId);
     }
 }
