@@ -20,7 +20,6 @@ public class UpdateFeedRequestDto {
     private final String contents;
 
     @Nullable
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final MultipartFile feedImage;
+    private final String feedImage;
 
 }
