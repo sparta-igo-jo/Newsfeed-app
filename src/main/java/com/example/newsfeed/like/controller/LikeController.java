@@ -18,7 +18,7 @@ public class LikeController {
             @PathVariable Long feedId,
             @SessionAttribute(name = SessionConst.LOGIN_USER) Long sessionUserId
     ){
-        likeService.toggleLike(sessionUserId, feedId);
-        return Response.of(null);
+        LikeResponseDto like = likeService.toggleLike(sessionUserId, feedId);
+        return Response.of(like);
     }
 }
