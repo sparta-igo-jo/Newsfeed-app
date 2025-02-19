@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.SortDefault;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
@@ -24,6 +25,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserWriteService userWriteService;
@@ -37,7 +39,7 @@ public class UserController {
 
     @GetMapping
     public Response<Page<GetAllUsersResponseDto>> getUsersWithKeyword(
-        @Valid @NotBlank @Size(min = 2, message = "검색어는 두 글자보다 짧을 수 없습니다.") @RequestParam String keyword,
+        @Valid @NotBlank @Size(min = 2, max = 10, message = "검색어는 2~10글자 사이로 입력해주세요.") @RequestParam String keyword,
         @SortDefault(sort = "name", direction = ASC) Pageable pageable
     ) {
         Page<GetAllUsersResponseDto> getUsersDto = userReadService.findUsersWithKeyword(keyword, pageable);

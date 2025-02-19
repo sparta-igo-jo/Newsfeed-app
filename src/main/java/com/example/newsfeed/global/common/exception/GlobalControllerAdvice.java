@@ -2,6 +2,8 @@ package com.example.newsfeed.global.common.exception;
 
 import com.example.newsfeed.global.response.Response;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static com.example.newsfeed.global.common.exception.ErrorCode.SERVER_NOT_WORK;
 import static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
@@ -82,4 +85,29 @@ public class GlobalControllerAdvice {
             new ErrorDetail(SERVER_NOT_WORK, null, "서버 문제로 인해 실패했습니다.")
         ));
     }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public Response<ConstraintViolationException> constraintViolationExceptionHandler(
+            ConstraintViolationException cve,
+            HttpServletResponse response
+    ) {
+        List<ErrorDetail> errorDetails = cve.getConstraintViolations().stream()
+                .map(violation -> {
+                    String code = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
+//                    String field = "";
+//                    for(Path.Node node : violation.getPropertyPath()) {
+//                        field = node.getName();
+//                    } // 다른 방법 못찾음..
+                    String field = StreamSupport.stream(violation.getPropertyPath().spliterator(), false)
+                            .reduce((first, second) -> second)
+                            .map(Path.Node::getName)
+                            .orElse("");
+                    String message = violation.getMessage();
+                    return new ErrorDetail(code, field, message);
+                }).toList();
+
+        response.setStatus(SC_BAD_REQUEST);
+        return Response.fail(BAD_REQUEST, errorDetails);
+    }
+
 }
