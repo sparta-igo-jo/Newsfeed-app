@@ -48,7 +48,7 @@ public class FollowController {
     public Response<Page<GetFollowResponseDto>> getFollowersByUser(
         @PathVariable Long userId,
         @SessionAttribute(LOGIN_USER) Long sessionUserId,
-        @SortDefault(sort = "name", direction = ASC) Pageable pageable
+        @SortDefault(sort = "follower.name", direction = ASC) Pageable pageable
     ) {
         Page<GetFollowResponseDto> targetUserFollowers =
             followReadService.getTargetUserFollowers(userId, sessionUserId, pageable);
@@ -59,7 +59,7 @@ public class FollowController {
     public Response<Page<GetFollowResponseDto>> getFollowingsByUser(
         @PathVariable Long userId,
         @SessionAttribute(LOGIN_USER) Long sessionUserId,
-        @SortDefault(sort = "name", direction = ASC) Pageable pageable
+        @SortDefault(sort = "following.name", direction = ASC) Pageable pageable
     ) {
         Page<GetFollowResponseDto> targetUserFollowings =
             followReadService.getTargetUserFollowings(userId, sessionUserId, pageable);
