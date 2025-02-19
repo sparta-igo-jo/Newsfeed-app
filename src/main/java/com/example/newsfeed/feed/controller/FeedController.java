@@ -17,7 +17,7 @@ import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USE
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
-@RequestMapping("/feeds")
+@RequestMapping
 @RequiredArgsConstructor
 public class FeedController {
 
@@ -25,7 +25,7 @@ public class FeedController {
     private final FeedReadService feedReadService;
 
 
-    @PostMapping
+    @PostMapping("/feeds")
     public Response<Long> createFeed(
         @RequestBody CreateFeedRequestDto dto,
         @SessionAttribute(LOGIN_USER) Long sessionUserId
@@ -35,16 +35,16 @@ public class FeedController {
     }
 
     // 선택한 피드의 상세정보(댓글을 포함한)
-    @GetMapping("/{feedId}")
+    @GetMapping("/feeds/{feedId}")
     public Response<GetFeedResponseDto> getFeed(@PathVariable Long feedId) {
         GetFeedResponseDto feed = feedReadService.getFeed(feedId);
         return Response.of(feed, "피드 단건 조회 성공");
     }
 
     // 나와 내가 팔로우한 사람들의 피드 목록 조회
-    @GetMapping
+    @GetMapping("/feeds")
     public Response<Page<GetAllFeedsResponseDto>> getMyFeedsWithFollowing(
-        @SortDefault(sort = "updateAt", direction = DESC) Pageable pageable,
+        @SortDefault(sort = "updatedAt", direction = DESC) Pageable pageable,
         @SessionAttribute(LOGIN_USER) Long sessionUserId
     ) {
         Page<GetAllFeedsResponseDto> feeds = feedReadService.getMyFeedsWithFollowing(sessionUserId, pageable);
@@ -52,16 +52,16 @@ public class FeedController {
     }
 
     // 내가 선택한 사람의 피드 목록 조회
-    @GetMapping("/user/{userId}")
+    @GetMapping("/feeds/users/{userId}")
     public Response<Page<GetAllFeedsResponseDto>> getUserFeeds(
         @PathVariable Long userId,
-        @SortDefault(sort = "updateAt", direction = DESC) Pageable pageable
+        @SortDefault(sort = "updatedAt", direction = DESC) Pageable pageable
     ) {
         Page<GetAllFeedsResponseDto> feeds = feedReadService.getUserFeeds(userId, pageable);
         return Response.of(feeds, "선택한 유저의 피드 목록 조회 성공");
     }
 
-    @PatchMapping("/{feedId}")
+    @PatchMapping("/feeds/{feedId}")
     public Response<Long> updateFeed(
         @PathVariable Long feedId,
         @RequestBody UpdateFeedRequestDto dto,
@@ -71,7 +71,7 @@ public class FeedController {
         return Response.of(updatedFeedId, "피드 수정 성공");
     }
 
-    @DeleteMapping("/{feedId}")
+    @DeleteMapping("/feeds/{feedId}")
     public Response<Void> deleteFeed(
         @PathVariable Long feedId,
         @SessionAttribute(LOGIN_USER) Long sessionUserId

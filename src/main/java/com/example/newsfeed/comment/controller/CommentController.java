@@ -16,33 +16,33 @@ import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USE
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping
 @RequiredArgsConstructor
 public class CommentController {
 
     private final CommentWriteService commentWriteService;
     private final CommentReadService commentReadService;
 
-    @PostMapping
+    @PostMapping("/comments/feeds/{feedId}")
     public Response<Long> createComment(
         @RequestBody CreateCommentRequestDto dto,
         @SessionAttribute(LOGIN_USER) Long sessionUserId,
-        @RequestParam Long feedId
+        @PathVariable Long feedId
     ) {
         Long newCommentId = commentWriteService.createComment(dto, sessionUserId, feedId);
         return Response.of(newCommentId, "댓글이 생성되었습니다.");
     }
 
-    @GetMapping("/feeds/{feedId}")
+    @GetMapping("/comments/feeds/{feedId}")
     public Response<Page<GetCommentResponseDto>> getCommentsByFeed(
         @PathVariable Long feedId,
-        @SortDefault(sort = "updateAt", direction = DESC) Pageable pageable
+        @SortDefault(sort = "updatedAt", direction = DESC) Pageable pageable
     ) {
         Page<GetCommentResponseDto> comments = commentReadService.findCommentsByFeedId(feedId, pageable);
         return Response.of(comments, "댓글이 조회되었습니다.");
     }
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/comments/{commentId}")
     public Response<Long> updateComment(
         @PathVariable Long commentId,
         @RequestBody UpdateCommnetRequestDto dto,
@@ -52,7 +52,7 @@ public class CommentController {
         return Response.of(updatedCommentId, "댓글이 수정되었습니다.");
     }
 
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public Response<Void> deleteComment(
         @PathVariable Long commentId,
         @SessionAttribute(LOGIN_USER) Long sessionUserId
