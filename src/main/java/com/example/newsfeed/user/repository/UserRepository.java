@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -21,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "update User u set u.deletedAt = current_timestamp where u.id = :userId")
     void deleteUserById(@Param("userId") Long userId);
+
+    Page<User> findByIdIn(Collection<Long> ids, Pageable pageable);
 }

@@ -3,6 +3,7 @@ package com.example.newsfeed.user.application.service;
 import com.example.newsfeed.global.common.exception.BaseException;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import com.example.newsfeed.user.application.converter.UserConverter;
+import com.example.newsfeed.user.dto.request.GetUsersRequestDto;
 import com.example.newsfeed.user.dto.request.SearchUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
@@ -32,7 +33,7 @@ public class UserReadService {
     }
 
     // 키워드로 유저 전체 조회
-    public Page<GetAllUsersResponseDto> findUsers(SearchUserRequestDto dto, Pageable pageable) {
+    public Page<GetAllUsersResponseDto> findUsersWithKeyword(SearchUserRequestDto dto, Pageable pageable) {
         Page<User> users = userRepository.findAllUsersByKeyword(dto.getKeyword(), pageable);
         return UserConverter.toResponse(users);
     }
@@ -42,5 +43,10 @@ public class UserReadService {
             .orElseThrow(() -> new BaseException(List.of(
                 new ErrorDetail(USER_NOT_FOUND, null, USER_NOT_FOUND.getMessage())
             )));
+    }
+
+    public Page<GetAllUsersResponseDto> findUsers(GetUsersRequestDto dto, Pageable pageable) {
+        Page<User> users = userRepository.findByIdIn(dto.getUserIds(), pageable);
+        return UserConverter.toResponse(users);
     }
 }

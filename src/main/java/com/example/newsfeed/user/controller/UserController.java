@@ -3,10 +3,7 @@ package com.example.newsfeed.user.controller;
 import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.user.application.service.UserReadService;
 import com.example.newsfeed.user.application.service.UserWriteService;
-import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
-import com.example.newsfeed.user.dto.request.SearchUserRequestDto;
-import com.example.newsfeed.user.dto.request.UpdateUserPasswordRequestDto;
-import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
+import com.example.newsfeed.user.dto.request.*;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import jakarta.validation.Valid;
@@ -34,12 +31,21 @@ public class UserController {
     }
 
     @GetMapping
-    public Response<Page<GetAllUsersResponseDto>> getUsers(
+    public Response<Page<GetAllUsersResponseDto>> getUsersWithKeyword(
         @Valid @RequestBody SearchUserRequestDto dto,
         @SortDefault(sort = "name", direction = ASC) Pageable pageable
     ) {
-        Page<GetAllUsersResponseDto> getUsersDto = userReadService.findUsers(dto, pageable);
+        Page<GetAllUsersResponseDto> getUsersDto = userReadService.findUsersWithKeyword(dto, pageable);
         return Response.of(getUsersDto, "유저 키워드 검색 성공");
+    }
+
+    @GetMapping("/list")
+    public Response<Page<GetAllUsersResponseDto>> getUsers(
+            @RequestBody GetUsersRequestDto dto,
+            @SortDefault(sort = "name", direction = ASC) Pageable pageable
+    ){
+        Page<GetAllUsersResponseDto> getUserDto = userReadService.findUsers(dto, pageable);
+        return Response.of(getUserDto, "유저 목록 조회 성공");
     }
 
     @PatchMapping("/{userId}/profile")
