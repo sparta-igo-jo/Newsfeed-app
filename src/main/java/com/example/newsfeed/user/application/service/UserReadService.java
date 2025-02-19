@@ -4,7 +4,6 @@ import com.example.newsfeed.global.common.exception.BaseException;
 import com.example.newsfeed.global.common.exception.ErrorDetail;
 import com.example.newsfeed.user.application.converter.UserConverter;
 import com.example.newsfeed.user.dto.request.GetUsersRequestDto;
-import com.example.newsfeed.user.dto.request.SearchUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import com.example.newsfeed.user.entity.User;
@@ -33,8 +32,8 @@ public class UserReadService {
     }
 
     // 키워드로 유저 전체 조회
-    public Page<GetAllUsersResponseDto> findUsersWithKeyword(SearchUserRequestDto dto, Pageable pageable) {
-        Page<User> users = userRepository.findAllUsersByKeyword(dto.getKeyword(), pageable);
+    public Page<GetAllUsersResponseDto> findUsersWithKeyword(String keyword, Pageable pageable) {
+        Page<User> users = userRepository.findAllUsersByKeyword(keyword, pageable);
         return UserConverter.toResponse(users);
     }
 

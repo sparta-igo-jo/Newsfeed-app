@@ -3,10 +3,15 @@ package com.example.newsfeed.user.controller;
 import com.example.newsfeed.global.response.Response;
 import com.example.newsfeed.user.application.service.UserReadService;
 import com.example.newsfeed.user.application.service.UserWriteService;
-import com.example.newsfeed.user.dto.request.*;
+import com.example.newsfeed.user.dto.request.DeleteUserRequestDto;
+import com.example.newsfeed.user.dto.request.GetUsersRequestDto;
+import com.example.newsfeed.user.dto.request.UpdateUserPasswordRequestDto;
+import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,18 +37,18 @@ public class UserController {
 
     @GetMapping
     public Response<Page<GetAllUsersResponseDto>> getUsersWithKeyword(
-        @Valid @RequestBody SearchUserRequestDto dto,
+        @Valid @NotBlank @Size(min = 2, message = "검색어는 두 글자보다 짧을 수 없습니다.") @RequestParam String keyword,
         @SortDefault(sort = "name", direction = ASC) Pageable pageable
     ) {
-        Page<GetAllUsersResponseDto> getUsersDto = userReadService.findUsersWithKeyword(dto, pageable);
+        Page<GetAllUsersResponseDto> getUsersDto = userReadService.findUsersWithKeyword(keyword, pageable);
         return Response.of(getUsersDto, "유저 키워드 검색 성공");
     }
 
     @GetMapping("/list")
     public Response<Page<GetAllUsersResponseDto>> getUsers(
-            @RequestBody GetUsersRequestDto dto,
-            @SortDefault(sort = "name", direction = ASC) Pageable pageable
-    ){
+        @RequestBody GetUsersRequestDto dto,
+        @SortDefault(sort = "name", direction = ASC) Pageable pageable
+    ) {
         Page<GetAllUsersResponseDto> getUserDto = userReadService.findUsers(dto, pageable);
         return Response.of(getUserDto, "유저 목록 조회 성공");
     }
