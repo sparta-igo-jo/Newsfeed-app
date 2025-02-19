@@ -9,6 +9,7 @@ import com.example.newsfeed.user.dto.request.UpdateUserPasswordRequestDto;
 import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -79,9 +80,11 @@ public class UserController {
     public Response<Void> deleteUser(
         @PathVariable Long userId,
         @Valid @RequestBody DeleteUserRequestDto dto,
-        @SessionAttribute(LOGIN_USER) Long sessionUserId
+        @SessionAttribute(LOGIN_USER) Long sessionUserId,
+        HttpSession session
     ) {
         userWriteService.deleteUser(userId, dto, sessionUserId);
+        session.invalidate(); // 탈퇴 후 세션 만료 -> 탈퇴된 회원은 활동 정지
         return Response.empty("회원 탈퇴 성공");
     }
 }
