@@ -6,6 +6,8 @@ spring:
     password: ${MYSQL_PASSWORD}
   jpa:
     open-in-view: false
+    hibernate:
+      ddl-auto: none
   data:
     web:
       pageable:
