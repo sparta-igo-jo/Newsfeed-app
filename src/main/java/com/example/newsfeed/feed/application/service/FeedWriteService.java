@@ -28,7 +28,7 @@ public class FeedWriteService {
     public Long createFeed(Long sessionUserId, CreateFeedRequestDto dto) {
         User findUser = userReadService.findUserById(sessionUserId);
         Feed newFeed = Feed.builder()
-            .title(dto.getTile())
+            .title(dto.getTitle())
             .contents(dto.getContents())
             .user(findUser)
             .feedImage(dto.getFeedImage())
@@ -39,18 +39,21 @@ public class FeedWriteService {
 
     @Transactional
     public Long updateFeed(Long sessionUserId, Long feedId, UpdateFeedRequestDto dto) {
-        checkPermission(sessionUserId, feedId);
         Feed findFeed = findFeedByIdOrThrow(feedId);
-        if (findFeed.getTitle().equals(dto.getTile())
-            && findFeed.getContents().equals(dto.getContents())
-            && findFeed.getFeedImage().equals(dto.getFeedImage())
-        ) {
-            return findFeed.getId();
+        checkPermission(findFeed.getUser().getId(), sessionUserId);
+
+
+        if (!findFeed.getTitle().equals(dto.getTitle())) {
+            findFeed.updateTitle(dto.getTitle());
         }
 
-        findFeed.updateTitle(dto.getTile());
-        findFeed.updateContents(dto.getContents());
-        findFeed.updateFeedImage(dto.getFeedImage());
+        if (dto.getContents() != null) {
+            findFeed.updateContents(dto.getContents());
+        }
+
+        if (dto.getFeedImage() != null) {
+            findFeed.updateFeedImage(dto.getFeedImage());
+        }
 
         return findFeed.getId();
     }
@@ -58,7 +61,7 @@ public class FeedWriteService {
     @Transactional
     public void deleteFeed(Long sessionUserId, Long feedId) {
         Feed findFeed = findFeedByIdOrThrow(feedId);
-        checkPermission(feedId, sessionUserId);
+        checkPermission(findFeed.getUser().getId(), sessionUserId);
         feedRepository.delete(findFeed);
     }
 
@@ -67,6 +70,7 @@ public class FeedWriteService {
     }
 
     private void checkPermission(Long userId, Long sessionUserId) {
+        User userById = userReadService.findUserById(sessionUserId);
         if (!userId.equals(sessionUserId)) {
             throw new BaseException(List.of(
                 new ErrorDetail(FEED_ACCESS_DENIED, null, FEED_ACCESS_DENIED.getMessage())

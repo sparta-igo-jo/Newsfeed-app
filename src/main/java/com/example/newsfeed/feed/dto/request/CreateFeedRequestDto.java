@@ -1,6 +1,5 @@
 package com.example.newsfeed.feed.dto.request;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,11 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateFeedRequestDto {
 
-    @NotBlank
-    private final String tile;
+    @NotBlank(message = "제목은 필수값입니다.")
+    private final String title;
 
     private final String contents;
 
-    @Nullable
     private final String feedImage;
 }

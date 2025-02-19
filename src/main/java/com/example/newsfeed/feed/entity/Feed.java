@@ -20,6 +20,7 @@ public class Feed extends BaseTimeEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(nullable = false)
     private String title;
 
     private String contents;
