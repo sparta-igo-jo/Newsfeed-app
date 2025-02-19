@@ -12,7 +12,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @RequiredArgsConstructor
 public class UpdateFeedRequestDto {
 
-    @NotBlank(message = "제목은 필수값입니다.")
+    @NotBlank
     private final String title;
 
     @Nullable

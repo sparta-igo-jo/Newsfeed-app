@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateFeedRequestDto {
 
-    @NotBlank(message = "제목은 필수값입니다.")
+    @NotBlank
     private final String title;
 
     private final String contents;
