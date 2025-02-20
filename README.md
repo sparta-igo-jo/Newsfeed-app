@@ -28,6 +28,11 @@
 
 <br>
 
+## 🎫 API 명세서
+https://documenter.getpostman.com/view/23681746/2sAYdZvEL8
+
+<br>
+
 ## 🖥 ERD 다이어그램
 
 ![Image](https://github.com/user-attachments/assets/746a5efb-e52c-4b43-9af2-e675e97c3b02)
