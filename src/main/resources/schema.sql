@@ -87,6 +87,3 @@ create table if not exists likes
     constraint FK_likes_users
         foreign key (user_id) references users (id)
 );
-
-create index IDX_follows_follower_following on follows (follower_id, following_id);
-create index IDX_likes_user_feed on likes (user_id, feed_id);

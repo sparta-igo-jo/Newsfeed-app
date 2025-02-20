@@ -18,8 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(
     name = "follows",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"}),
-    indexes = {@Index(name = "idx_follower_following", columnList = "follower_id, following_id")})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"}))
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = PROTECTED)
 public class Follow {
