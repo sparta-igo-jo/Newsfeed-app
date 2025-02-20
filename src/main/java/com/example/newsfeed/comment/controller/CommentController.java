@@ -6,6 +6,7 @@ import com.example.newsfeed.comment.dto.request.CreateCommentRequestDto;
 import com.example.newsfeed.comment.dto.request.UpdateCommnetRequestDto;
 import com.example.newsfeed.comment.dto.response.GetCommentResponseDto;
 import com.example.newsfeed.global.response.Response;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +46,7 @@ public class CommentController {
     @PatchMapping("/comments/{commentId}")
     public Response<Long> updateComment(
         @PathVariable Long commentId,
-        @RequestBody UpdateCommnetRequestDto dto,
+        @Valid @RequestBody UpdateCommnetRequestDto dto,
         @SessionAttribute(LOGIN_USER) Long sessionUserId
     ) {
         Long updatedCommentId = commentWriteService.updateComment(commentId, sessionUserId, dto);

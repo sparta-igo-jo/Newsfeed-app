@@ -61,7 +61,7 @@ public class CommentWriteService {
     @Transactional
     public void deleteComment(Long commentId, Long sessionUserId) {
         Comment findComment = findCommentByIdOrThrow(commentId);
-        checkUserPermission(findComment.getId(), sessionUserId);
+        checkUserPermission(findComment.getUser().getId(), sessionUserId);
         Comment comment = findCommentByIdOrThrow(commentId);
         commentRepository.delete(comment);
     }

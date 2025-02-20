@@ -9,6 +9,7 @@ import com.example.newsfeed.user.dto.request.UpdateUserPasswordRequestDto;
 import com.example.newsfeed.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeed.user.dto.response.GetAllUsersResponseDto;
 import com.example.newsfeed.user.dto.response.GetUserResponseDto;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.SortDefault;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import static com.example.newsfeed.global.common.constant.SessionConst.LOGIN_USER;
@@ -24,6 +26,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserWriteService userWriteService;
@@ -37,7 +40,7 @@ public class UserController {
 
     @GetMapping
     public Response<Page<GetAllUsersResponseDto>> getUsersWithKeyword(
-        @Valid @NotBlank @Size(min = 2, message = "검색어는 두 글자보다 짧을 수 없습니다.") @RequestParam String keyword,
+        @Valid @NotBlank @Size(min = 2, max = 10, message = "검색어는 2~10글자 사이로 입력해주세요.") @RequestParam String keyword,
         @SortDefault(sort = "name", direction = ASC) Pageable pageable
     ) {
         Page<GetAllUsersResponseDto> getUsersDto = userReadService.findUsersWithKeyword(keyword, pageable);
@@ -77,9 +80,11 @@ public class UserController {
     public Response<Void> deleteUser(
         @PathVariable Long userId,
         @Valid @RequestBody DeleteUserRequestDto dto,
-        @SessionAttribute(LOGIN_USER) Long sessionUserId
+        @SessionAttribute(LOGIN_USER) Long sessionUserId,
+        HttpSession session
     ) {
         userWriteService.deleteUser(userId, dto, sessionUserId);
+        session.invalidate(); // 탈퇴 후 세션 만료 -> 탈퇴된 회원은 활동 정지
         return Response.empty("회원 탈퇴 성공");
     }
 }
