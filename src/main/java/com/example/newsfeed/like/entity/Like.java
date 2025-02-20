@@ -19,8 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Table(
     name = "likes",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "feed_id"}),
-    indexes = {@Index(name = "idx_user_id_feed_id", columnList = "user_id, feed_id")})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "feed_id"}))
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = PROTECTED)
 public class Like {

@@ -1,4 +1,7 @@
 spring:
   config:
     import:
-      - classpath:/local/application-local.yml
+      - classpath:/prod/application-prod.yml
+
+base:
+  dir: ${BASE_DIR}
