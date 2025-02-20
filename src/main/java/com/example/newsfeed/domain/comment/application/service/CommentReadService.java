@@ -1,0 +1,29 @@
+package com.example.newsfeed.domain.comment.application.service;
+
+import com.example.newsfeed.domain.comment.application.converter.CommentConverter;
+import com.example.newsfeed.domain.comment.dto.response.GetCommentResponseDto;
+import com.example.newsfeed.domain.comment.entity.Comment;
+import com.example.newsfeed.domain.comment.repository.CommentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class CommentReadService {
+
+    private final CommentRepository commentRepository;
+    private final FeedReadService feedReadService;
+
+    public Page<GetCommentResponseDto> findCommentsByFeedId(
+        Long feedId,
+        Pageable pageable
+    ) {
+        feedReadService.findFeedByIdOrThrow(feedId);
+        Page<Comment> comments = commentRepository.findByFeedId(feedId, pageable);
+        return CommentConverter.toResponse(comments);
+    }
+}
