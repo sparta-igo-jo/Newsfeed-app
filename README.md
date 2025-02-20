@@ -6,10 +6,9 @@
 
 <br>
 
-
 ## 💁‍♂️ 프로젝트 팀원
 
-|리더|팀원|팀원|팀원|팀원|
+|팀장|팀원|팀원|팀원|팀원|
 |:---:|:---:|:---:|:---:|:---:|
 |[이규정](https://github.com/KyujungLee)|[박용준](https://github.com/dereck-jun)|[전영준](https://github.com/lamgak12)|[석연걸](https://github.com/SeokYeongeol)|[조은종](https://github.com/Roloya28)|
 
@@ -29,8 +28,7 @@
 
 <br>
 
-
-## 🖥 ERD 다이어그램 
+## 🖥 ERD 다이어그램
 
 ![Image](https://github.com/user-attachments/assets/746a5efb-e52c-4b43-9af2-e675e97c3b02)
 
@@ -46,20 +44,6 @@
 
 <br>
 
-## 🗣️기술적 의사결정
-
-<details>
-  <summary>DataBase : MySQL</summary>
-<br>
-
-- 관계를 맺고 있는 데이터가 자주 수정되는 경우, MySQL의 관계형 데이터 모델과 트랜잭션 관리 기능은 데이터의 무결성과 일관성을 보장하는 데 유리합니다.
-
-<br>
-
-</details>
-
-<br>
-
 ## 🤔 Trouble Shoothing
 
 <details>
@@ -71,19 +55,7 @@
 
 ➡️ 오류 내용
 
-The dependencies of some of the beans in the application context form a cycle:
-
-commentService defined in file [C:\sparta\newsfeed\build\classes\java\main\com\example\newsfeed\comment\application\service\CommentService.class]
-┌─────┐
-| userService defined in file [C:\sparta\newsfeed\build\classes\java\main\com\example\newsfeed\user\application\service\UserService.class]
-↑     ↓
-| feedService defined in file [C:\sparta\newsfeed\build\classes\java\main\com\example\newsfeed\feed\application\service\FeedService.class]
-└─────┘
-
-
-Action:
-
-Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.
+![Image](https://github.com/user-attachments/assets/93c605b4-dbcb-430c-97a4-ce608c589aff)
 
 
 
